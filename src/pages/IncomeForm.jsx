@@ -9,6 +9,7 @@ const IncomeForm = () => {
   const [category, setCategory] = useState('Pre-registration');
   const [amount, setAmount] = useState('');
   const [count, setCount] = useState('1');
+  const [monthFilter, setMonthFilter] = useState('');
   const [description, setDescription] = useState('');
   const [transactionDate, setTransactionDate] = useState(new Date().toISOString().split('T')[0]);
   const [viewMode, setViewMode] = useState('monthly');
@@ -50,6 +51,7 @@ const IncomeForm = () => {
         category, 
         amount: Number(amount), 
         count: Number(count),
+        monthFilter,
         description,
         date: new Date(transactionDate).toISOString()
       });
@@ -60,12 +62,14 @@ const IncomeForm = () => {
         category, 
         amount: Number(amount), 
         count: Number(count),
+        monthFilter,
         description,
         date: new Date(transactionDate).toISOString()
       });
     }
     setAmount('');
     setCount('1');
+    setMonthFilter('');
     setDescription('');
     setTransactionDate(new Date().toISOString().split('T')[0]);
   };
@@ -75,6 +79,7 @@ const IncomeForm = () => {
     setCategory(t.category);
     setAmount(t.amount.toString());
     setCount(t.count?.toString() || '1');
+    setMonthFilter(t.monthFilter || '');
     setDescription(t.description || '');
     if (t.date) {
       setTransactionDate(new Date(t.date).toISOString().split('T')[0]);
@@ -89,6 +94,7 @@ const IncomeForm = () => {
         setEditingId(null);
         setAmount('');
         setCount('1');
+        setMonthFilter('');
         setDescription('');
       }
     }
@@ -143,6 +149,15 @@ const IncomeForm = () => {
                 onChange={(e) => setCount(e.target.value)} 
                 required 
                 min="1"
+              />
+            </div>
+            <div className="input-group">
+              <label>Month Filter</label>
+              <input 
+                type="month" 
+                className="input-field" 
+                value={monthFilter} 
+                onChange={(e) => setMonthFilter(e.target.value)} 
               />
             </div>
             <div className="input-group">

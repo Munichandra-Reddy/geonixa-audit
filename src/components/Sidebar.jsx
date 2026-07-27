@@ -1,7 +1,7 @@
 "use client";
 import Link from 'next/link';
 import { useRouter, usePathname } from 'next/navigation';
-import { LayoutDashboard, Calendar, PieChart, Receipt, Users, LogOut, GraduationCap } from 'lucide-react';
+import { LayoutDashboard, PieChart, Receipt, Users, LogOut, GraduationCap } from 'lucide-react';
 import { useContext } from 'react';
 import { AppContext } from '../context/AppContext';
 import './Sidebar.css';
@@ -26,10 +26,6 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
         <Link href="/" className={pathname === '/' ? "nav-item active" : "nav-item"} onClick={() => setIsOpen(false)}>
           <LayoutDashboard size={20} />
           <span>Dashboard</span>
-        </Link>
-        <Link href="/calendar" className={pathname === '/calendar' ? "nav-item active" : "nav-item"} onClick={() => setIsOpen(false)}>
-          <Calendar size={20} />
-          <span>Calendar View</span>
         </Link>
         <Link href="/income" className={pathname === '/income' ? "nav-item active" : "nav-item"} onClick={() => setIsOpen(false)}>
           <Receipt size={20} />
