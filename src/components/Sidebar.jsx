@@ -1,0 +1,61 @@
+"use client";
+import Link from 'next/link';
+import { useRouter, usePathname } from 'next/navigation';
+import { LayoutDashboard, Calendar, PieChart, Receipt, Users, LogOut, GraduationCap } from 'lucide-react';
+import { useContext } from 'react';
+import { AppContext } from '../context/AppContext';
+import './Sidebar.css';
+
+const Sidebar = () => {
+  const { logout } = useContext(AppContext);
+  const router = useRouter();
+  const pathname = usePathname();
+
+  const handleLogout = () => {
+    logout();
+    router.push('/login');
+  };
+
+  return (
+    <aside className="sidebar glass-panel">
+      <div className="sidebar-logo">
+        <h3>Geonixa</h3>
+        <span>Audit</span>
+      </div>
+      <nav className="sidebar-nav">
+        <Link href="/" className={pathname === '/' ? "nav-item active" : "nav-item"}>
+          <LayoutDashboard size={20} />
+          <span>Dashboard</span>
+        </Link>
+        <Link href="/calendar" className={pathname === '/calendar' ? "nav-item active" : "nav-item"}>
+          <Calendar size={20} />
+          <span>Calendar View</span>
+        </Link>
+        <Link href="/income" className={pathname === '/income' ? "nav-item active" : "nav-item"}>
+          <Receipt size={20} />
+          <span>Income Log</span>
+        </Link>
+        <Link href="/expenses" className={pathname === '/expenses' ? "nav-item active" : "nav-item"}>
+          <PieChart size={20} />
+          <span>Expenses</span>
+        </Link>
+        <Link href="/employees" className={pathname === '/employees' ? "nav-item active" : "nav-item"}>
+          <Users size={20} />
+          <span>Employees</span>
+        </Link>
+        <Link href="/mentors" className={pathname === '/mentors' ? "nav-item active" : "nav-item"}>
+          <GraduationCap size={20} />
+          <span>Mentors</span>
+        </Link>
+      </nav>
+      <div className="sidebar-footer">
+        <button className="nav-item logout-btn" onClick={handleLogout}>
+          <LogOut size={20} />
+          <span>Log Out</span>
+        </button>
+      </div>
+    </aside>
+  );
+};
+
+export default Sidebar;
