@@ -85,8 +85,8 @@ export const AppProvider = ({ children }) => {
     const dbMentor = {
       name: mentor.name,
       course: mentor.course,
-      strength: mentor.strength,
-      base_salary: mentor.baseSalary,
+      strength: mentor.strength || 0,
+      base_salary: mentor.baseSalary || 0,
       total: mentor.total,
       payment_date: mentor.paymentDate
     };
@@ -100,8 +100,8 @@ export const AppProvider = ({ children }) => {
     const dbMentor = {
       name: updatedMentor.name,
       course: updatedMentor.course,
-      strength: updatedMentor.strength,
-      base_salary: updatedMentor.baseSalary,
+      strength: updatedMentor.strength || 0,
+      base_salary: updatedMentor.baseSalary || 0,
       total: updatedMentor.total,
       payment_date: updatedMentor.paymentDate
     };
