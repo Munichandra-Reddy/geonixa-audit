@@ -6,7 +6,10 @@ export const AppContext = createContext();
 export const AppProvider = ({ children }) => {
   // Auth State
   const [isAuthenticated, setIsAuthenticated] = useState(() => {
-    return localStorage.getItem('geonixa_auth') === 'true';
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('geonixa_auth') === 'true';
+    }
+    return false;
   });
 
   const login = () => {
@@ -21,18 +24,27 @@ export const AppProvider = ({ children }) => {
 
   // Data State
   const [employees, setEmployees] = useState(() => {
-    const saved = localStorage.getItem('geonixa_employees');
-    return saved ? JSON.parse(saved) : [];
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('geonixa_employees');
+      return saved ? JSON.parse(saved) : [];
+    }
+    return [];
   });
 
   const [mentors, setMentors] = useState(() => {
-    const saved = localStorage.getItem('geonixa_mentors');
-    return saved ? JSON.parse(saved) : [];
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('geonixa_mentors');
+      return saved ? JSON.parse(saved) : [];
+    }
+    return [];
   });
 
   const [transactions, setTransactions] = useState(() => {
-    const saved = localStorage.getItem('geonixa_transactions');
-    return saved ? JSON.parse(saved) : [];
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('geonixa_transactions');
+      return saved ? JSON.parse(saved) : [];
+    }
+    return [];
   });
 
   // Save to localStorage whenever data changes
