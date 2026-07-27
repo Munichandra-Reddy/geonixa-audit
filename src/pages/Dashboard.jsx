@@ -165,6 +165,7 @@ const Dashboard = () => {
             className={`toggle-btn ${viewMode === 'all' ? 'active' : ''}`}
             onClick={() => setViewMode('all')}
           >All</button>
+        </div>
       </div>
 
       <div className="summary-grid">
