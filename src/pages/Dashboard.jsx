@@ -1,7 +1,7 @@
 "use client";
 import { useState, useContext, useMemo } from 'react';
 import { AppContext } from '../context/AppContext';
-import { TrendingUp, TrendingDown, DollarSign, Wallet, Users } from 'lucide-react';
+import { TrendingUp, TrendingDown, DollarSign, Wallet } from 'lucide-react';
 import './Dashboard.css';
 
 const Dashboard = () => {
