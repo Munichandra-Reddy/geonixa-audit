@@ -128,4 +128,14 @@
   .form-grid {
     grid-template-columns: 1fr;
   }
+  
+  .form-card, .list-card {
+    padding: 16px;
+  }
+  
+  .data-table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
 }

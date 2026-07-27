@@ -15,6 +15,27 @@
   border-radius: 12px;
 }
 
+.topbar-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.menu-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+}
+
+.mobile-only {
+  display: none;
+}
+
 .topbar h2 {
   font-size: 1.25rem;
   font-weight: 600;
@@ -36,4 +57,38 @@
 @keyframes fadeIn {
   from { opacity: 0; }
   to { opacity: 1; }
+}
+
+.sidebar-overlay {
+  display: none;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+  .mobile-only {
+    display: flex;
+  }
+  
+  .main-content {
+    padding: 16px 12px;
+    gap: 16px;
+  }
+  
+  .topbar {
+    padding: 12px 16px;
+  }
+  
+  .sidebar-overlay {
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    z-index: 90;
+    animation: fadeIn 0.3s ease-out;
+  }
 }
