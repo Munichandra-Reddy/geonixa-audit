@@ -165,11 +165,6 @@ const Dashboard = () => {
             className={`toggle-btn ${viewMode === 'all' ? 'active' : ''}`}
             onClick={() => setViewMode('all')}
           >All</button>
-        </div>
-        <div className="pre-reg-badge glass-panel text-success">
-          <Users size={20} />
-          <strong>{summary.preRegistrations}</strong> Pre-registrations ({viewMode})
-        </div>
       </div>
 
       <div className="summary-grid">
