@@ -1,7 +1,7 @@
 "use client";
-import { useState, useContext } from 'react';
+import { useState, useContext, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { ShieldCheck, Mail, Lock } from 'lucide-react';
+import { ShieldCheck, Mail, Lock, Download } from 'lucide-react';
 import { AppContext } from '../context/AppContext';
 import './Login.css';
 
@@ -9,8 +9,32 @@ const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [deferredPrompt, setDeferredPrompt] = useState(null);
   const router = useRouter();
   const { login } = useContext(AppContext);
+
+  useEffect(() => {
+    const handleBeforeInstallPrompt = (e) => {
+      e.preventDefault();
+      setDeferredPrompt(e);
+    };
+
+    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+
+    return () => {
+      window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+    };
+  }, []);
+
+  const handleInstallClick = async () => {
+    if (deferredPrompt) {
+      deferredPrompt.prompt();
+      const { outcome } = await deferredPrompt.userChoice;
+      if (outcome === 'accepted') {
+        setDeferredPrompt(null);
+      }
+    }
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -70,6 +94,17 @@ const Login = () => {
           <button type="submit" className="btn-primary login-btn">
             Sign In
           </button>
+
+          {deferredPrompt && (
+            <button 
+              type="button" 
+              className="btn-primary login-btn" 
+              style={{ marginTop: '16px', background: '#10b981', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}
+              onClick={handleInstallClick}
+            >
+              <Download size={18} /> Install App
+            </button>
+          )}
         </form>
       </div>
     </div>
