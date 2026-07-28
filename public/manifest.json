@@ -1,0 +1,18 @@
+{
+  "name": "Geonixa Audit",
+  "short_name": "Geonixa",
+  "description": "Employee and Financial Management Application",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#5b1422",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
