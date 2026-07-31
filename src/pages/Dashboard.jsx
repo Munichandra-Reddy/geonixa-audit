@@ -1,7 +1,7 @@
 "use client";
 import { useState, useContext, useMemo } from 'react';
 import { AppContext } from '../context/AppContext';
-import { TrendingUp, TrendingDown, DollarSign, Wallet } from 'lucide-react';
+import { TrendingUp, TrendingDown, DollarSign, Wallet, Clock } from 'lucide-react';
 import './Dashboard.css';
 
 const Dashboard = () => {
@@ -80,7 +80,8 @@ const Dashboard = () => {
       netProfit: totalIncome - totalExpenses,
       preRegistrations,
       preRegistrationAmount,
-      postPaymentAmount
+      postPaymentAmount,
+      pendingAmount: postPaymentAmount - preRegistrationAmount
     };
   }, [filteredData, mentors, viewMode, selectedDate]);
 
@@ -186,6 +187,16 @@ const Dashboard = () => {
           <div className="stat-info">
             <span className="stat-label">Post-payment ({viewMode})</span>
             <h3 className="stat-value text-success">{formatCurrency(summary.postPaymentAmount)}</h3>
+          </div>
+        </div>
+
+        <div className="stat-card glass-panel">
+          <div className="stat-icon" style={{background: 'rgba(58, 13, 22, 0.1)', color: 'var(--primary-color)'}}>
+            <Clock size={24} />
+          </div>
+          <div className="stat-info">
+            <span className="stat-label">Pending ({viewMode})</span>
+            <h3 className="stat-value text-warning">{formatCurrency(summary.pendingAmount)}</h3>
           </div>
         </div>
 
