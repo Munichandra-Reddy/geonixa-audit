@@ -307,15 +307,6 @@ const IncomeForm = () => {
               </div>
             </div>
             <div className="input-group">
-              <label>Month Filter</label>
-              <input 
-                type="month" 
-                className="input-field" 
-                value={monthFilter} 
-                onChange={(e) => setMonthFilter(e.target.value)} 
-              />
-            </div>
-            <div className="input-group">
               <label>Amount (₹)</label>
               <input 
                 type="number" 
