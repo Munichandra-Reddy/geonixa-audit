@@ -1,7 +1,7 @@
 "use client";
 import Link from 'next/link';
 import { useRouter, usePathname } from 'next/navigation';
-import { LayoutDashboard, PieChart, Receipt, Users, LogOut, GraduationCap } from 'lucide-react';
+import { LayoutDashboard, PieChart, Receipt, Users, LogOut, GraduationCap, Bell } from 'lucide-react';
 import { useContext } from 'react';
 import { AppContext } from '../context/AppContext';
 import './Sidebar.css';
@@ -42,6 +42,10 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
         <Link href="/mentors" className={pathname === '/mentors' ? "nav-item active" : "nav-item"} onClick={() => setIsOpen(false)}>
           <GraduationCap size={20} />
           <span>Mentors</span>
+        </Link>
+        <Link href="/notifications" className={pathname === '/notifications' ? "nav-item active" : "nav-item"} onClick={() => setIsOpen(false)}>
+          <Bell size={20} />
+          <span>Notifications</span>
         </Link>
       </nav>
       <div className="sidebar-footer">

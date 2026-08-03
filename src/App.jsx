@@ -9,6 +9,7 @@ import IncomeForm from './pages/IncomeForm';
 import ExpenseForm from './pages/ExpenseForm';
 import Employees from './pages/Employees';
 import Mentors from './pages/Mentors';
+import Notifications from './pages/Notifications';
 
 function App() {
   const { isAuthenticated } = useContext(AppContext);
@@ -29,6 +30,7 @@ function App() {
           <Route path="expenses" element={<ExpenseForm />} />
           <Route path="employees" element={<Employees />} />
           <Route path="mentors" element={<Mentors />} />
+          <Route path="notifications" element={<Notifications />} />
         </Route>
       </Routes>
     </Router>
