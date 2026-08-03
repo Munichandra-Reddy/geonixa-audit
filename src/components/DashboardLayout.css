@@ -5,6 +5,7 @@
   flex-direction: column;
   gap: 24px;
   overflow-y: auto;
+  height: 100vh;
 }
 
 .topbar {
