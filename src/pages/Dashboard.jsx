@@ -146,7 +146,7 @@ const Dashboard = () => {
 
       <div className="summary-grid">
         <div className="stat-card glass-panel">
-          <div className="stat-icon" style={{background: 'rgba(58, 13, 22, 0.1)', color: 'var(--primary-color)'}}>
+          <div className="stat-icon" style={{background: 'rgba(99, 102, 241, 0.12)', color: 'var(--primary-color)'}}>
             <Wallet size={24} />
           </div>
           <div className="stat-info">
@@ -159,7 +159,7 @@ const Dashboard = () => {
         </div>
 
         <div className="stat-card glass-panel">
-          <div className="stat-icon" style={{background: 'rgba(58, 13, 22, 0.1)', color: 'var(--primary-color)'}}>
+          <div className="stat-icon" style={{background: 'rgba(139, 92, 246, 0.12)', color: 'var(--accent-violet)'}}>
             <Wallet size={24} />
           </div>
           <div className="stat-info">
@@ -172,7 +172,7 @@ const Dashboard = () => {
         </div>
 
         <div className="stat-card glass-panel">
-          <div className="stat-icon" style={{background: 'rgba(58, 13, 22, 0.1)', color: 'var(--primary-color)'}}>
+          <div className="stat-icon" style={{background: 'rgba(245, 158, 11, 0.12)', color: '#D97706'}}>
             <Clock size={24} />
           </div>
           <div className="stat-info">

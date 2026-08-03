@@ -199,19 +199,19 @@ const ExpenseForm = () => {
               )}
               <div style={{ display: 'flex', gap: '4px' }}>
                 <button 
-                  style={{ padding: '6px 12px', borderRadius: '6px', border: '1px solid var(--border-color)', background: viewMode === 'daily' ? 'rgba(58, 13, 22, 0.1)' : 'transparent', color: viewMode === 'daily' ? 'var(--primary-color)' : 'var(--text-secondary)', fontWeight: viewMode === 'daily' ? '600' : '400', cursor: 'pointer' }}
+                  style={{ padding: '6px 12px', borderRadius: '8px', border: '1px solid var(--border-color)', background: viewMode === 'daily' ? 'rgba(99, 102, 241, 0.12)' : 'transparent', color: viewMode === 'daily' ? 'var(--primary-color)' : 'var(--text-secondary)', fontWeight: viewMode === 'daily' ? '600' : '500', cursor: 'pointer' }}
                   onClick={() => setViewMode('daily')}
                 >Daily</button>
                 <button 
-                  style={{ padding: '6px 12px', borderRadius: '6px', border: '1px solid var(--border-color)', background: viewMode === 'monthly' ? 'rgba(58, 13, 22, 0.1)' : 'transparent', color: viewMode === 'monthly' ? 'var(--primary-color)' : 'var(--text-secondary)', fontWeight: viewMode === 'monthly' ? '600' : '400', cursor: 'pointer' }}
+                  style={{ padding: '6px 12px', borderRadius: '8px', border: '1px solid var(--border-color)', background: viewMode === 'monthly' ? 'rgba(99, 102, 241, 0.12)' : 'transparent', color: viewMode === 'monthly' ? 'var(--primary-color)' : 'var(--text-secondary)', fontWeight: viewMode === 'monthly' ? '600' : '500', cursor: 'pointer' }}
                   onClick={() => setViewMode('monthly')}
                 >Monthly</button>
                 <button 
-                  style={{ padding: '6px 12px', borderRadius: '6px', border: '1px solid var(--border-color)', background: viewMode === 'yearly' ? 'rgba(58, 13, 22, 0.1)' : 'transparent', color: viewMode === 'yearly' ? 'var(--primary-color)' : 'var(--text-secondary)', fontWeight: viewMode === 'yearly' ? '600' : '400', cursor: 'pointer' }}
+                  style={{ padding: '6px 12px', borderRadius: '8px', border: '1px solid var(--border-color)', background: viewMode === 'yearly' ? 'rgba(99, 102, 241, 0.12)' : 'transparent', color: viewMode === 'yearly' ? 'var(--primary-color)' : 'var(--text-secondary)', fontWeight: viewMode === 'yearly' ? '600' : '500', cursor: 'pointer' }}
                   onClick={() => setViewMode('yearly')}
                 >Yearly</button>
                 <button 
-                  style={{ padding: '6px 12px', borderRadius: '6px', border: '1px solid var(--border-color)', background: viewMode === 'all' ? 'rgba(58, 13, 22, 0.1)' : 'transparent', color: viewMode === 'all' ? 'var(--primary-color)' : 'var(--text-secondary)', fontWeight: viewMode === 'all' ? '600' : '400', cursor: 'pointer' }}
+                  style={{ padding: '6px 12px', borderRadius: '8px', border: '1px solid var(--border-color)', background: viewMode === 'all' ? 'rgba(99, 102, 241, 0.12)' : 'transparent', color: viewMode === 'all' ? 'var(--primary-color)' : 'var(--text-secondary)', fontWeight: viewMode === 'all' ? '600' : '500', cursor: 'pointer' }}
                   onClick={() => setViewMode('all')}
                 >All</button>
               </div>
