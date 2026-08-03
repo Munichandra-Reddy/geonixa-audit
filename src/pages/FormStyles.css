@@ -297,6 +297,15 @@
   margin-top: 2px;
 }
 
+.month-total-card.post-total-card {
+  background: rgba(58, 13, 22, 0.06);
+  border-color: rgba(58, 13, 22, 0.2);
+}
+
+.month-total-card.post-total-card .month-total-value {
+  color: var(--primary-color);
+}
+
 .month-total-info {
   display: flex;
   flex-direction: column;
@@ -319,4 +328,49 @@
   font-weight: 700;
   color: var(--success-color);
 }
+
+/* Post-Payment 3-Box Layout inside each Month */
+.month-card.post-card {
+  min-width: 105px;
+  padding: 8px 6px;
+}
+
+.month-post-boxes {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.month-input-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  text-align: left;
+}
+
+.month-input-sublabel {
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.month-calc-box {
+  width: 100%;
+  padding: 5px 4px;
+  text-align: center;
+  border-radius: 6px;
+  background: rgba(22, 163, 74, 0.08);
+  border: 1px solid rgba(22, 163, 74, 0.25);
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--success-color);
+  min-height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 
