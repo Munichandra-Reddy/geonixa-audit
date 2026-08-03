@@ -11,7 +11,7 @@ const ExpenseForm = () => {
   const [description, setDescription] = useState('');
   const [selectedEmployee, setSelectedEmployee] = useState('');
   const [selectedMentor, setSelectedMentor] = useState('');
-  const [salaryMonth, setSalaryMonth] = useState('');
+  const [expenseMonth, setExpenseMonth] = useState('');
   const [viewMode, setViewMode] = useState('monthly');
   const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
 
@@ -46,16 +46,25 @@ const ExpenseForm = () => {
     if (!amount) return;
     
     const isSalary = category === 'Employee Salary' || category === 'Mentor Salary';
-    const desc = isSalary ? `Salary for ${category === 'Employee Salary' ? (selectedEmployee || 'Employee') : (selectedMentor || 'Mentor')} (${salaryMonth})` : description;
+    let desc = description;
+    if (isSalary) {
+      desc = `Salary for ${category === 'Employee Salary' ? (selectedEmployee || 'Employee') : (selectedMentor || 'Mentor')} (${expenseMonth})`;
+    } else if (expenseMonth) {
+      desc = description ? `${description} (${expenseMonth})` : `${category} (${expenseMonth})`;
+    }
 
     addTransaction({ 
       type: 'expense',
       category, 
       amount: Number(amount), 
+      monthFilter: expenseMonth,
       description: desc 
     });
     setAmount('');
     setDescription('');
+    setExpenseMonth('');
+    setSelectedEmployee('');
+    setSelectedMentor('');
   };
 
   return (
@@ -104,17 +113,16 @@ const ExpenseForm = () => {
               </div>
             )}
 
-            {(category === 'Employee Salary' || category === 'Mentor Salary') && (
-              <div className="input-group">
-                <label>Salary Month</label>
-                <select className="input-field" value={salaryMonth} onChange={(e) => setSalaryMonth(e.target.value)} required>
-                  <option value="">-- Select Month --</option>
-                  {months.map(m => (
-                    <option key={m} value={m}>{m}</option>
-                  ))}
-                </select>
-              </div>
-            )}
+            {/* Month Box for Rent, Refund, Other, and Salary */}
+            <div className="input-group">
+              <label>{(category === 'Employee Salary' || category === 'Mentor Salary') ? 'Salary Month' : 'Month'}</label>
+              <select className="input-field" value={expenseMonth} onChange={(e) => setExpenseMonth(e.target.value)} required>
+                <option value="">-- Select Month --</option>
+                {months.map(m => (
+                  <option key={m} value={m}>{m}</option>
+                ))}
+              </select>
+            </div>
 
             <div className="input-group">
               <label>Amount (₹)</label>
