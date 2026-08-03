@@ -54,7 +54,9 @@ const Dashboard = () => {
     let totalMentorSalaries = 0;
     (mentors || []).forEach(mentor => {
       if (!mentor.paymentDate) return;
-      if (viewMode === 'monthly' && mentor.paymentDate === targetDateStr) {
+      if (viewMode === 'daily' && `${mentor.paymentDate}-01` === selectedDate) {
+        totalMentorSalaries += (mentor.total || 0);
+      } else if (viewMode === 'monthly' && mentor.paymentDate === targetDateStr) {
         totalMentorSalaries += (mentor.total || 0);
       }
     });
@@ -89,8 +91,13 @@ const Dashboard = () => {
     const mentorTx = (mentors || [])
       .filter(mentor => {
         if (!mentor.paymentDate) return false;
-        if (viewMode === 'monthly' && mentor.paymentDate !== targetDateStr) return false;
-        return true;
+        if (viewMode === 'daily') {
+          return `${mentor.paymentDate}-01` === selectedDate;
+        }
+        if (viewMode === 'monthly') {
+          return mentor.paymentDate === targetDateStr;
+        }
+        return false;
       })
       .map(mentor => ({
         id: `mentor-${mentor.id}`,
@@ -217,19 +224,19 @@ const Dashboard = () => {
             <table className="data-table">
               <thead>
                 <tr>
-                  <th>Date</th>
-                  <th>Category</th>
-                  <th>Description</th>
-                  <th>Amount (₹)</th>
+                  <th style={{ width: '15%' }}>Date</th>
+                  <th style={{ width: '25%' }}>Category</th>
+                  <th style={{ width: '40%' }}>Description</th>
+                  <th style={{ width: '20%', textAlign: 'right' }}>Amount (₹)</th>
                 </tr>
               </thead>
               <tbody>
-                {combinedRecentTransactions.slice().reverse().slice(0, 5).map((t) => (
+                {combinedRecentTransactions.slice().reverse().slice(0, 10).map((t) => (
                   <tr key={t.id}>
-                    <td>{new Date(t.date).toLocaleDateString()}</td>
+                    <td style={{ whiteSpace: 'nowrap' }}>{new Date(t.date).toLocaleDateString()}</td>
                     <td><strong>{t.category}</strong></td>
                     <td>{t.description || '-'}</td>
-                    <td className={`font-semibold ${t.type === 'income' ? 'text-success' : 'text-danger'}`}>
+                    <td style={{ textAlign: 'right', whiteSpace: 'nowrap' }} className={`font-semibold ${t.type === 'income' ? 'text-success' : 'text-danger'}`}>
                       {t.type === 'income' ? '+' : '-'}₹{t.amount.toLocaleString('en-IN')}
                     </td>
                   </tr>
