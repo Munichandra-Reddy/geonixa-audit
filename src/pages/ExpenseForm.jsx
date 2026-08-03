@@ -11,11 +11,9 @@ const ExpenseForm = () => {
   const [description, setDescription] = useState('');
   const [selectedEmployee, setSelectedEmployee] = useState('');
   const [selectedMentor, setSelectedMentor] = useState('');
-  const [expenseMonth, setExpenseMonth] = useState('');
+  const [expenseMonthYear, setExpenseMonthYear] = useState(new Date().toISOString().substring(0, 7));
   const [viewMode, setViewMode] = useState('monthly');
   const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
-
-  const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
   const expenseTransactions = transactions.filter(t => t.type === 'expense');
 
@@ -46,23 +44,34 @@ const ExpenseForm = () => {
     if (!amount) return;
     
     const isSalary = category === 'Employee Salary' || category === 'Mentor Salary';
+    
+    let monthYearDisplay = expenseMonthYear;
+    if (expenseMonthYear) {
+      const [y, m] = expenseMonthYear.split('-');
+      const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+      const mName = monthNames[parseInt(m, 10) - 1] || m;
+      monthYearDisplay = `${mName} ${y}`;
+    }
+
     let desc = description;
     if (isSalary) {
-      desc = `Salary for ${category === 'Employee Salary' ? (selectedEmployee || 'Employee') : (selectedMentor || 'Mentor')} (${expenseMonth})`;
-    } else if (expenseMonth) {
-      desc = description ? `${description} (${expenseMonth})` : `${category} (${expenseMonth})`;
+      desc = `Salary for ${category === 'Employee Salary' ? (selectedEmployee || 'Employee') : (selectedMentor || 'Mentor')} (${monthYearDisplay})`;
+    } else if (monthYearDisplay) {
+      desc = description ? `${description} (${monthYearDisplay})` : `${category} (${monthYearDisplay})`;
     }
+
+    const txDate = expenseMonthYear ? `${expenseMonthYear}-01T12:00:00.000Z` : new Date().toISOString();
 
     addTransaction({ 
       type: 'expense',
       category, 
       amount: Number(amount), 
-      monthFilter: expenseMonth,
-      description: desc 
+      monthFilter: monthYearDisplay,
+      description: desc,
+      date: txDate
     });
     setAmount('');
     setDescription('');
-    setExpenseMonth('');
     setSelectedEmployee('');
     setSelectedMentor('');
   };
@@ -113,15 +122,16 @@ const ExpenseForm = () => {
               </div>
             )}
 
-            {/* Month Box for Rent, Refund, Other, and Salary */}
+            {/* Month & Year with Calendar Picker for every category */}
             <div className="input-group">
-              <label>{(category === 'Employee Salary' || category === 'Mentor Salary') ? 'Salary Month' : 'Month'}</label>
-              <select className="input-field" value={expenseMonth} onChange={(e) => setExpenseMonth(e.target.value)} required>
-                <option value="">-- Select Month --</option>
-                {months.map(m => (
-                  <option key={m} value={m}>{m}</option>
-                ))}
-              </select>
+              <label>{(category === 'Employee Salary' || category === 'Mentor Salary') ? 'Salary Month & Year' : 'Month & Year'}</label>
+              <input 
+                type="month" 
+                className="input-field" 
+                value={expenseMonthYear} 
+                onChange={(e) => setExpenseMonthYear(e.target.value)} 
+                required 
+              />
             </div>
 
             <div className="input-group">
