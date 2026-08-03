@@ -150,7 +150,7 @@ const Notifications = () => {
                   padding: '16px', 
                   borderRadius: '8px', 
                   border: '1px solid var(--border-color)',
-                  background: 'rgba(255, 255, 255, 0.4)',
+                  background: 'var(--card-bg)',
                   transition: 'background 0.2s ease'
                 }}
               >

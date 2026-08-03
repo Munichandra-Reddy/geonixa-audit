@@ -207,7 +207,7 @@
   height: 28px;
   border-radius: 8px;
   border: 1px solid var(--border-color);
-  background: #FFFFFF;
+  background: var(--card-bg);
   color: var(--text-primary);
   cursor: pointer;
   transition: all 0.2s ease;
@@ -258,7 +258,7 @@
 .month-card {
   flex: 0 0 calc((100% - 30px) / 4);
   min-width: 95px;
-  background: #FFFFFF;
+  background: var(--card-bg);
   border: 1.5px solid var(--border-color);
   border-radius: 12px;
   padding: 10px 8px;
@@ -314,7 +314,7 @@
   text-align: center;
   border-radius: 8px;
   border: 1.5px solid var(--border-color);
-  background: #FFFFFF;
+  background: var(--input-bg);
   font-size: 0.95rem;
   font-weight: 700;
   color: var(--text-primary);
