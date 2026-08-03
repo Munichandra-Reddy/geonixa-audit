@@ -12,10 +12,10 @@
   --accent-fuchsia: #D946EF;
   --accent-amber: #F59E0B;
   
-  --bg-color: #F8FAFC;
-  --bg-gradient: radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.07) 0px, transparent 50%), radial-gradient(at 100% 100%, rgba(139, 92, 246, 0.07) 0px, transparent 50%), radial-gradient(at 50% 50%, rgba(6, 182, 212, 0.04) 0px, transparent 50%);
-  --card-bg: rgba(255, 255, 255, 0.82);
-  --card-bg-hover: rgba(255, 255, 255, 0.95);
+  --bg-color: #FF7700;
+  --bg-gradient: linear-gradient(135deg, #FF6200 0%, #FF7F11 40%, #FF9E2C 100%);
+  --card-bg: rgba(255, 255, 255, 0.90);
+  --card-bg-hover: rgba(255, 255, 255, 0.98);
   
   --text-primary: #0F172A;
   --text-secondary: #64748B;
