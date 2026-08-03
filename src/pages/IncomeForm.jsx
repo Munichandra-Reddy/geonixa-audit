@@ -1,20 +1,103 @@
 "use client";
-import { useState, useContext, useMemo } from 'react';
+import { useState, useContext, useMemo, useRef, useEffect } from 'react';
 import { AppContext } from '../context/AppContext';
-import { Receipt, Plus, Edit2, Trash2 } from 'lucide-react';
+import { Receipt, Plus, Edit2, Trash2, ChevronLeft, ChevronRight } from 'lucide-react';
 import './FormStyles.css';
+
+const monthNames = [
+  'January', 'February', 'March', 'April', 'May', 'June',
+  'July', 'August', 'September', 'October', 'November', 'December'
+];
 
 const IncomeForm = () => {
   const { transactions, addTransaction, updateTransaction, deleteTransaction } = useContext(AppContext);
   const [category, setCategory] = useState('Pre-registration');
   const [amount, setAmount] = useState('');
   const [count, setCount] = useState('1');
+  const [monthCounts, setMonthCounts] = useState({});
   const [monthFilter, setMonthFilter] = useState('');
   const [description, setDescription] = useState('');
   const [transactionDate, setTransactionDate] = useState(new Date().toISOString().split('T')[0]);
   const [viewMode, setViewMode] = useState('monthly');
   const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
   const [editingId, setEditingId] = useState(null);
+
+  const carouselRef = useRef(null);
+
+  // Generate 25 months (12 past, current, 12 future)
+  const generatedMonths = useMemo(() => {
+    const list = [];
+    const now = new Date();
+    const start = new Date(now.getFullYear(), now.getMonth() - 12, 1);
+    for (let i = 0; i < 25; i++) {
+      const d = new Date(start.getFullYear(), start.getMonth() + i, 1);
+      const monthKey = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+      list.push({
+        key: monthKey,
+        monthName: monthNames[d.getMonth()],
+        year: d.getFullYear(),
+        isCurrent: d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear()
+      });
+    }
+    return list;
+  }, []);
+
+  // Auto-scroll so current month (e.g. August) is the first visible month by default
+  useEffect(() => {
+    if (carouselRef.current) {
+      const currentMonthIndex = generatedMonths.findIndex(m => m.isCurrent);
+      if (currentMonthIndex !== -1) {
+        // Each card takes roughly 25% of the client width
+        const cardWidth = (carouselRef.current.clientWidth - 30) / 4;
+        carouselRef.current.scrollLeft = currentMonthIndex * (cardWidth + 10);
+      }
+    }
+  }, [generatedMonths]);
+
+  const handleScrollLeft = () => {
+    if (carouselRef.current) {
+      const cardWidth = (carouselRef.current.clientWidth - 30) / 4;
+      carouselRef.current.scrollBy({ left: -(cardWidth + 10) * 2, behavior: 'smooth' });
+    }
+  };
+
+  const handleScrollRight = () => {
+    if (carouselRef.current) {
+      const cardWidth = (carouselRef.current.clientWidth - 30) / 4;
+      carouselRef.current.scrollBy({ left: (cardWidth + 10) * 2, behavior: 'smooth' });
+    }
+  };
+
+  const handleMonthCountChange = (key, val) => {
+    const cleanVal = val === '' ? '' : Math.max(0, parseInt(val, 10) || 0);
+    const newMonthCounts = {
+      ...monthCounts,
+      [key]: cleanVal
+    };
+
+    if (cleanVal === '' || cleanVal === 0) {
+      delete newMonthCounts[key];
+    }
+
+    setMonthCounts(newMonthCounts);
+
+    const total = Object.values(newMonthCounts).reduce((sum, v) => sum + (Number(v) || 0), 0);
+    setCount(total > 0 ? total.toString() : '');
+  };
+
+  const totalCalculatedMonthCount = useMemo(() => {
+    return Object.values(monthCounts).reduce((sum, val) => sum + (Number(val) || 0), 0);
+  }, [monthCounts]);
+
+  const monthBreakdownText = useMemo(() => {
+    const activeEntries = Object.entries(monthCounts).filter(([_, v]) => Number(v) > 0);
+    if (activeEntries.length === 0) return '';
+    return activeEntries.map(([key, v]) => {
+      const mObj = generatedMonths.find(m => m.key === key);
+      const name = mObj ? mObj.monthName : key;
+      return `${name}: ${v}`;
+    }).join(', ');
+  }, [monthCounts, generatedMonths]);
 
   const incomeTransactions = transactions.filter(t => t.type === 'income');
 
@@ -44,14 +127,16 @@ const IncomeForm = () => {
     e.preventDefault();
     if (!amount) return;
     
+    const finalCount = Number(count) || (totalCalculatedMonthCount > 0 ? totalCalculatedMonthCount : 1);
+
     if (editingId) {
       const existingTx = transactions.find(t => t.id === editingId);
       updateTransaction({ 
         ...existingTx,
         category, 
         amount: Number(amount), 
-        count: Number(count),
-        monthFilter,
+        count: finalCount,
+        monthFilter: monthFilter || monthBreakdownText,
         description,
         date: new Date(transactionDate).toISOString()
       });
@@ -61,14 +146,15 @@ const IncomeForm = () => {
         type: 'income',
         category, 
         amount: Number(amount), 
-        count: Number(count),
-        monthFilter,
+        count: finalCount,
+        monthFilter: monthFilter || monthBreakdownText,
         description,
         date: new Date(transactionDate).toISOString()
       });
     }
     setAmount('');
     setCount('1');
+    setMonthCounts({});
     setMonthFilter('');
     setDescription('');
     setTransactionDate(new Date().toISOString().split('T')[0]);
@@ -79,6 +165,7 @@ const IncomeForm = () => {
     setCategory(t.category);
     setAmount(t.amount.toString());
     setCount(t.count?.toString() || '1');
+    setMonthCounts({});
     setMonthFilter(t.monthFilter || '');
     setDescription(t.description || '');
     if (t.date) {
@@ -94,6 +181,7 @@ const IncomeForm = () => {
         setEditingId(null);
         setAmount('');
         setCount('1');
+        setMonthCounts({});
         setMonthFilter('');
         setDescription('');
       }
@@ -149,7 +237,74 @@ const IncomeForm = () => {
                 onChange={(e) => setCount(e.target.value)} 
                 required 
                 min="1"
+                placeholder="Enter count or fill months below"
               />
+
+              {/* 4-Month Scrollable Carousel with Count per Month */}
+              <div className="month-count-section">
+                <div className="month-count-header">
+                  <span className="month-count-header-title">Months (4 visible, scroll for before/after)</span>
+                  <div className="month-carousel-nav">
+                    <button 
+                      type="button" 
+                      className="month-scroll-btn" 
+                      onClick={handleScrollLeft} 
+                      title="Scroll previous months"
+                    >
+                      <ChevronLeft size={16} />
+                    </button>
+                    <button 
+                      type="button" 
+                      className="month-scroll-btn" 
+                      onClick={handleScrollRight} 
+                      title="Scroll next months"
+                    >
+                      <ChevronRight size={16} />
+                    </button>
+                  </div>
+                </div>
+
+                <div className="month-carousel-container">
+                  <div className="month-carousel-track" ref={carouselRef}>
+                    {generatedMonths.map(m => {
+                      const mVal = monthCounts[m.key] !== undefined ? monthCounts[m.key] : '';
+                      const hasCount = Number(mVal) > 0;
+                      return (
+                        <div 
+                          key={m.key} 
+                          className={`month-card ${hasCount ? 'has-count' : ''} ${m.isCurrent ? 'is-current' : ''}`}
+                        >
+                          <div className="month-card-header">
+                            <span className="month-card-name">{m.monthName}</span>
+                            <span className="month-card-year">{m.year}</span>
+                          </div>
+                          <input 
+                            type="number" 
+                            className="month-count-input" 
+                            placeholder="0"
+                            min="0"
+                            value={mVal}
+                            onChange={(e) => handleMonthCountChange(m.key, e.target.value)}
+                          />
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* Total Count Display at last */}
+                <div className="month-total-card">
+                  <div className="month-total-info">
+                    <span className="month-total-label">Total Count</span>
+                    <span className="month-total-breakdown">
+                      {monthBreakdownText ? monthBreakdownText : 'Enter counts in months above or box'}
+                    </span>
+                  </div>
+                  <div className="month-total-value">
+                    {totalCalculatedMonthCount > 0 ? totalCalculatedMonthCount : (count || 0)}
+                  </div>
+                </div>
+              </div>
             </div>
             <div className="input-group">
               <label>Month Filter</label>

@@ -139,3 +139,184 @@
     white-space: nowrap;
   }
 }
+
+/* Month-Wise Count Carousel & Total Styles */
+.month-count-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.month-count-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.month-count-header-title {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.month-carousel-nav {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.month-scroll-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  border: 1px solid var(--border-color);
+  background: var(--card-bg);
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.month-scroll-btn:hover:not(:disabled) {
+  background: rgba(58, 13, 22, 0.08);
+  border-color: var(--primary-color);
+  color: var(--primary-color);
+}
+
+.month-scroll-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.month-carousel-container {
+  position: relative;
+  width: 100%;
+}
+
+.month-carousel-track {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  padding: 4px 2px 8px 2px;
+  width: 100%;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-color) transparent;
+}
+
+.month-carousel-track::-webkit-scrollbar {
+  height: 5px;
+}
+
+.month-carousel-track::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.month-carousel-track::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: 4px;
+}
+
+.month-card {
+  flex: 0 0 calc((100% - 30px) / 4);
+  min-width: 95px;
+  background: rgba(255, 255, 255, 0.75);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  padding: 10px 8px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  transition: all 0.2s ease;
+  user-select: none;
+}
+
+.month-card.has-count {
+  border-color: var(--primary-color);
+  background: rgba(58, 13, 22, 0.05);
+  box-shadow: 0 2px 8px rgba(58, 13, 22, 0.08);
+}
+
+.month-card.is-current {
+  border-top: 3px solid var(--primary-color);
+}
+
+.month-card-header {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.month-card-name {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.month-card-year {
+  font-size: 0.7rem;
+  color: var(--text-secondary);
+}
+
+.month-count-input {
+  width: 100%;
+  padding: 6px 4px;
+  text-align: center;
+  border-radius: 6px;
+  border: 1px solid var(--border-color);
+  background: #ffffff;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.month-count-input:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px rgba(58, 13, 22, 0.15);
+}
+
+.month-total-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  background: rgba(22, 163, 74, 0.08);
+  border: 1px solid rgba(22, 163, 74, 0.25);
+  border-radius: 8px;
+  margin-top: 2px;
+}
+
+.month-total-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.month-total-label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.month-total-breakdown {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+.month-total-value {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--success-color);
+}
+
