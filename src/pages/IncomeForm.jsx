@@ -12,7 +12,7 @@ const monthNames = [
 const IncomeForm = () => {
   const { transactions, addTransaction, updateTransaction, deleteTransaction } = useContext(AppContext);
   const [category, setCategory] = useState('Pre-registration');
-  const [amount, setAmount] = useState('');
+  const [amount, setAmount] = useState('1000');
   const [count, setCount] = useState('1');
   const [monthCounts, setMonthCounts] = useState({});
   const [monthFilter, setMonthFilter] = useState('');
@@ -23,6 +23,18 @@ const IncomeForm = () => {
   const [editingId, setEditingId] = useState(null);
 
   const carouselRef = useRef(null);
+
+  // Auto-calculate Amount for Pre-registration (₹1,000 per count)
+  useEffect(() => {
+    if (category === 'Pre-registration') {
+      const numCount = Number(count);
+      if (!isNaN(numCount) && numCount > 0) {
+        setAmount((numCount * 1000).toString());
+      } else if (count === '' || numCount === 0) {
+        setAmount('');
+      }
+    }
+  }, [category, count]);
 
   // Generate 25 months (12 past, current, 12 future)
   const generatedMonths = useMemo(() => {
@@ -152,8 +164,8 @@ const IncomeForm = () => {
         date: new Date(transactionDate).toISOString()
       });
     }
-    setAmount('');
     setCount('1');
+    setAmount(category === 'Pre-registration' ? '1000' : '');
     setMonthCounts({});
     setMonthFilter('');
     setDescription('');
@@ -179,8 +191,8 @@ const IncomeForm = () => {
       deleteTransaction(id);
       if (editingId === id) {
         setEditingId(null);
-        setAmount('');
         setCount('1');
+        setAmount(category === 'Pre-registration' ? '1000' : '');
         setMonthCounts({});
         setMonthFilter('');
         setDescription('');
