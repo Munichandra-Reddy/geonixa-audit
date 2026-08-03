@@ -21,30 +21,27 @@ const Dashboard = () => {
       if (viewMode === 'daily') {
         return tDate.toDateString() === targetDate.toDateString();
       }
-      if (viewMode === 'monthly') {
-        return tDate.getMonth() === targetDate.getMonth() && tDate.getFullYear() === targetDate.getFullYear();
-      }
-      if (viewMode === 'yearly') {
-        return tDate.getFullYear() === targetDate.getFullYear();
-      }
-      return true;
+      // default: monthly
+      return tDate.getMonth() === targetDate.getMonth() && tDate.getFullYear() === targetDate.getFullYear();
     });
   }, [transactions, viewMode, selectedDate]);
 
   const summary = useMemo(() => {
     let totalIncome = 0;
     let totalExpenses = 0;
-    let preRegistrations = 0;
+    let preRegistrationCount = 0;
     let preRegistrationAmount = 0;
+    let postPaymentCount = 0;
     let postPaymentAmount = 0;
 
     filteredData.forEach(t => {
       if (t.type === 'income') {
         totalIncome += t.amount;
         if (t.category === 'Pre-registration') {
-          preRegistrations += t.count || 1; 
+          preRegistrationCount += (Number(t.count) || 1); 
           preRegistrationAmount += t.amount;
         } else if (t.category === 'Post-payment') {
+          postPaymentCount += (Number(t.count) || 1);
           postPaymentAmount += t.amount;
         }
       } else {
@@ -53,21 +50,11 @@ const Dashboard = () => {
     });
 
     const targetDateStr = selectedDate.substring(0, 7);
-    const targetYearStr = selectedDate.substring(0, 4);
     
     let totalMentorSalaries = 0;
     (mentors || []).forEach(mentor => {
       if (!mentor.paymentDate) return;
-      let include = false;
       if (viewMode === 'monthly' && mentor.paymentDate === targetDateStr) {
-        include = true;
-      } else if (viewMode === 'yearly' && mentor.paymentDate.substring(0, 4) === targetYearStr) {
-        include = true;
-      } else if (viewMode === 'all') {
-        include = true;
-      }
-      
-      if (include) {
         totalMentorSalaries += (mentor.total || 0);
       }
     });
@@ -78,9 +65,11 @@ const Dashboard = () => {
       totalIncome,
       totalExpenses,
       netProfit: totalIncome - totalExpenses,
-      preRegistrations,
+      preRegistrationCount,
       preRegistrationAmount,
+      postPaymentCount,
       postPaymentAmount,
+      pendingCount: postPaymentCount - preRegistrationCount,
       pendingAmount: postPaymentAmount - preRegistrationAmount
     };
   }, [filteredData, mentors, viewMode, selectedDate]);
@@ -96,13 +85,11 @@ const Dashboard = () => {
     }));
 
     const targetDateStr = selectedDate.substring(0, 7);
-    const targetYearStr = selectedDate.substring(0, 4);
     
     const mentorTx = (mentors || [])
       .filter(mentor => {
         if (!mentor.paymentDate) return false;
         if (viewMode === 'monthly' && mentor.paymentDate !== targetDateStr) return false;
-        if (viewMode === 'yearly' && mentor.paymentDate.substring(0, 4) !== targetYearStr) return false;
         return true;
       })
       .map(mentor => ({
@@ -139,17 +126,6 @@ const Dashboard = () => {
               onChange={(e) => setSelectedDate(`${e.target.value}-01`)} 
             />
           )}
-          {viewMode === 'yearly' && (
-            <input 
-              type="number" 
-              className="input-field" 
-              style={{ width: '100px', padding: '6px 12px', marginRight: '8px', border: 'none', background: 'transparent' }} 
-              value={selectedDate.substring(0, 4)} 
-              onChange={(e) => setSelectedDate(`${e.target.value}-01-01`)} 
-              min="2000"
-              max="2100"
-            />
-          )}
           <button 
             className={`toggle-btn ${viewMode === 'daily' ? 'active' : ''}`}
             onClick={() => setViewMode('daily')}
@@ -158,14 +134,6 @@ const Dashboard = () => {
             className={`toggle-btn ${viewMode === 'monthly' ? 'active' : ''}`}
             onClick={() => setViewMode('monthly')}
           >Monthly</button>
-          <button 
-            className={`toggle-btn ${viewMode === 'yearly' ? 'active' : ''}`}
-            onClick={() => setViewMode('yearly')}
-          >Yearly</button>
-          <button 
-            className={`toggle-btn ${viewMode === 'all' ? 'active' : ''}`}
-            onClick={() => setViewMode('all')}
-          >All</button>
         </div>
       </div>
 
@@ -175,7 +143,10 @@ const Dashboard = () => {
             <Wallet size={24} />
           </div>
           <div className="stat-info">
-            <span className="stat-label">Pre-registration ({viewMode})</span>
+            <div className="stat-header-row">
+              <span className="stat-label">Pre-registration ({viewMode})</span>
+              <span className="stat-count-badge">Count: {summary.preRegistrationCount}</span>
+            </div>
             <h3 className="stat-value text-success">{formatCurrency(summary.preRegistrationAmount)}</h3>
           </div>
         </div>
@@ -185,7 +156,10 @@ const Dashboard = () => {
             <Wallet size={24} />
           </div>
           <div className="stat-info">
-            <span className="stat-label">Post-payment ({viewMode})</span>
+            <div className="stat-header-row">
+              <span className="stat-label">Post-payment ({viewMode})</span>
+              <span className="stat-count-badge">Count: {summary.postPaymentCount}</span>
+            </div>
             <h3 className="stat-value text-success">{formatCurrency(summary.postPaymentAmount)}</h3>
           </div>
         </div>
@@ -195,7 +169,10 @@ const Dashboard = () => {
             <Clock size={24} />
           </div>
           <div className="stat-info">
-            <span className="stat-label">Pending ({viewMode})</span>
+            <div className="stat-header-row">
+              <span className="stat-label">Pending ({viewMode})</span>
+              <span className="stat-count-badge">Count: {summary.pendingCount}</span>
+            </div>
             <h3 className="stat-value text-warning">{formatCurrency(summary.pendingAmount)}</h3>
           </div>
         </div>

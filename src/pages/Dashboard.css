@@ -75,13 +75,34 @@
 .stat-info {
   display: flex;
   flex-direction: column;
+  flex: 1;
+}
+
+.stat-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  margin-bottom: 4px;
+}
+
+.stat-count-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  border-radius: 12px;
+  background: rgba(58, 13, 22, 0.08);
+  color: var(--primary-color);
+  font-size: 0.78rem;
+  font-weight: 600;
+  white-space: nowrap;
 }
 
 .stat-label {
   color: var(--text-secondary);
   font-size: 0.875rem;
   font-weight: 500;
-  margin-bottom: 4px;
 }
 
 .stat-value {
