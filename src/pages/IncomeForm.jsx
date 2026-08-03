@@ -439,33 +439,6 @@ const IncomeForm = () => {
                     })}
                   </div>
                 </div>
-
-                {/* Total Summary Card (Count for Pre-registration, Total Price for Post-payment) */}
-                {category === 'Pre-registration' ? (
-                  <div className="month-total-card">
-                    <div className="month-total-info">
-                      <span className="month-total-label">Total Count</span>
-                      <span className="month-total-breakdown">
-                        {monthBreakdownText ? monthBreakdownText : 'Enter counts in months above or box'}
-                      </span>
-                    </div>
-                    <div className="month-total-value">
-                      {totalCalculatedMonthCount > 0 ? totalCalculatedMonthCount : (count || 0)}
-                    </div>
-                  </div>
-                ) : (
-                  <div className="month-total-card post-total-card">
-                    <div className="month-total-info">
-                      <span className="month-total-label">Total Price</span>
-                      <span className="month-total-breakdown">
-                        {postBreakdownText ? postBreakdownText : 'Enter count & price in months above'}
-                      </span>
-                    </div>
-                    <div className="month-total-value">
-                      ₹{(totalPostPrice || (Number(amount) || 0)).toLocaleString('en-IN')}
-                    </div>
-                  </div>
-                )}
               </div>
             </div>
 
