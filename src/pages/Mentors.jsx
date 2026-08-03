@@ -8,30 +8,18 @@ const Mentors = () => {
   const { mentors, addMentor, updateMentor, deleteMentor } = useContext(AppContext);
   const [name, setName] = useState('');
   const [course, setCourse] = useState('');
-  const [paymentDate, setPaymentDate] = useState('');
   const [total, setTotal] = useState('');
   const [editingId, setEditingId] = useState(null);
-  const [viewMode, setViewMode] = useState('monthly');
-  const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
   const [searchQuery, setSearchQuery] = useState('');
 
   const filteredData = useMemo(() => {
     return mentors.filter(mentor => {
-      if (searchQuery && !mentor.name?.toLowerCase().includes(searchQuery.toLowerCase())) {
+      if (searchQuery && !mentor.name?.toLowerCase().includes(searchQuery.toLowerCase()) && !mentor.course?.toLowerCase().includes(searchQuery.toLowerCase())) {
         return false;
       }
-      
-      // paymentDate is in "YYYY-MM" format
-      if (!mentor.paymentDate) return true;
-      if (viewMode === 'monthly') {
-        return mentor.paymentDate === selectedDate.substring(0, 7);
-      }
-      if (viewMode === 'yearly') {
-        return mentor.paymentDate.substring(0, 4) === selectedDate.substring(0, 4);
-      }
-      return true; // 'all'
+      return true;
     });
-  }, [mentors, viewMode, selectedDate, searchQuery]);
+  }, [mentors, searchQuery]);
 
   const totalAmount = useMemo(() => {
     return filteredData.reduce((sum, mentor) => sum + (mentor.total || 0), 0);
@@ -39,18 +27,17 @@ const Mentors = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!name || !course || !paymentDate || !total) return;
+    if (!name || !course || !total) return;
     
     if (editingId) {
-      updateMentor({ id: editingId, name, course, paymentDate, total: Number(total), joinDate: new Date().toISOString() });
+      updateMentor({ id: editingId, name, course, total: Number(total), joinDate: new Date().toISOString() });
       setEditingId(null);
     } else {
-      addMentor({ name, course, paymentDate, total: Number(total), joinDate: new Date().toISOString() });
+      addMentor({ name, course, total: Number(total), joinDate: new Date().toISOString() });
     }
     
     setName('');
     setCourse('');
-    setPaymentDate('');
     setTotal('');
   };
 
@@ -58,7 +45,6 @@ const Mentors = () => {
     setEditingId(mentor.id);
     setName(mentor.name);
     setCourse(mentor.course);
-    setPaymentDate(mentor.paymentDate);
     setTotal(mentor.total?.toString() || '');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -70,7 +56,6 @@ const Mentors = () => {
         setEditingId(null);
         setName('');
         setCourse('');
-        setPaymentDate('');
         setTotal('');
       }
     }
@@ -108,16 +93,6 @@ const Mentors = () => {
               />
             </div>
             <div className="input-group">
-              <label>Date of Payment</label>
-              <input 
-                type="month" 
-                className="input-field" 
-                value={paymentDate} 
-                onChange={(e) => setPaymentDate(e.target.value)} 
-                required 
-              />
-            </div>
-            <div className="input-group">
               <label>Total (₹)</label>
               <input 
                 type="number" 
@@ -142,44 +117,10 @@ const Mentors = () => {
                 type="text" 
                 className="input-field" 
                 placeholder="Search mentor..." 
-                style={{ width: '160px', padding: '6px 12px' }} 
+                style={{ width: '200px', padding: '6px 12px' }} 
                 value={searchQuery} 
                 onChange={(e) => setSearchQuery(e.target.value)} 
               />
-              {viewMode === 'monthly' && (
-                <input 
-                  type="month" 
-                  className="input-field" 
-                  style={{ width: 'auto', padding: '6px 12px' }} 
-                  value={selectedDate.substring(0, 7)} 
-                  onChange={(e) => setSelectedDate(`${e.target.value}-01`)} 
-                />
-              )}
-              {viewMode === 'yearly' && (
-                <input 
-                  type="number" 
-                  className="input-field" 
-                  style={{ width: '100px', padding: '6px 12px' }} 
-                  value={selectedDate.substring(0, 4)} 
-                  onChange={(e) => setSelectedDate(`${e.target.value}-01-01`)} 
-                  min="2000"
-                  max="2100"
-                />
-              )}
-              <div style={{ display: 'flex', gap: '4px' }}>
-                <button 
-                  style={{ padding: '6px 12px', borderRadius: '6px', border: '1px solid var(--border-color)', background: viewMode === 'monthly' ? 'rgba(58, 13, 22, 0.1)' : 'transparent', color: viewMode === 'monthly' ? 'var(--primary-color)' : 'var(--text-secondary)', fontWeight: viewMode === 'monthly' ? '600' : '400', cursor: 'pointer' }}
-                  onClick={() => setViewMode('monthly')}
-                >Monthly</button>
-                <button 
-                  style={{ padding: '6px 12px', borderRadius: '6px', border: '1px solid var(--border-color)', background: viewMode === 'yearly' ? 'rgba(58, 13, 22, 0.1)' : 'transparent', color: viewMode === 'yearly' ? 'var(--primary-color)' : 'var(--text-secondary)', fontWeight: viewMode === 'yearly' ? '600' : '400', cursor: 'pointer' }}
-                  onClick={() => setViewMode('yearly')}
-                >Yearly</button>
-                <button 
-                  style={{ padding: '6px 12px', borderRadius: '6px', border: '1px solid var(--border-color)', background: viewMode === 'all' ? 'rgba(58, 13, 22, 0.1)' : 'transparent', color: viewMode === 'all' ? 'var(--primary-color)' : 'var(--text-secondary)', fontWeight: viewMode === 'all' ? '600' : '400', cursor: 'pointer' }}
-                  onClick={() => setViewMode('all')}
-                >All</button>
-              </div>
             </div>
           </div>
           {filteredData.length === 0 ? (
@@ -190,7 +131,6 @@ const Mentors = () => {
                 <tr>
                   <th>Mentor Name</th>
                   <th>Course</th>
-                  <th>Date of Payment</th>
                   <th>Total (₹)</th>
                   <th style={{ textAlign: 'right' }}>Actions</th>
                 </tr>
@@ -200,7 +140,6 @@ const Mentors = () => {
                   <tr key={mentor.id}>
                     <td><strong>{mentor.name}</strong></td>
                     <td>{mentor.course}</td>
-                    <td>{mentor.paymentDate}</td>
                     <td>₹{mentor.total?.toLocaleString('en-IN') || 0}</td>
                     <td style={{ textAlign: 'right' }}>
                       <button type="button" onClick={() => handleEdit(mentor)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-secondary)', marginRight: '16px' }} title="Edit"><Edit2 size={18} /></button>
@@ -211,8 +150,9 @@ const Mentors = () => {
               </tbody>
               <tfoot>
                 <tr>
-                  <td colSpan="4" style={{ textAlign: 'right', fontWeight: '700', padding: '16px' }}>Total Amount:</td>
+                  <td colSpan="2" style={{ textAlign: 'right', fontWeight: '700', padding: '16px' }}>Total Amount:</td>
                   <td className="text-primary" style={{ fontWeight: '700', fontSize: '1.1rem', padding: '16px' }}>₹{totalAmount.toLocaleString('en-IN')}</td>
+                  <td></td>
                 </tr>
               </tfoot>
             </table>

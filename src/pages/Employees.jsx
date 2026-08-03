@@ -8,17 +8,15 @@ const Employees = () => {
   const { employees, addEmployee } = useContext(AppContext);
   const [name, setName] = useState('');
   const [role, setRole] = useState('');
-  const [salaryMonth, setSalaryMonth] = useState('');
   const [baseSalary, setBaseSalary] = useState('');
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!name || !role || !baseSalary) return;
     
-    addEmployee({ name, role, salaryMonth, baseSalary: Number(baseSalary), joinDate: new Date().toISOString() });
+    addEmployee({ name, role, baseSalary: Number(baseSalary), joinDate: new Date().toISOString() });
     setName('');
     setRole('');
-    setSalaryMonth('');
     setBaseSalary('');
   };
 
@@ -50,16 +48,6 @@ const Employees = () => {
                 className="input-field" 
                 value={role} 
                 onChange={(e) => setRole(e.target.value)} 
-                required 
-              />
-            </div>
-            <div className="input-group">
-              <label>Salary Month</label>
-              <input 
-                type="month" 
-                className="input-field" 
-                value={salaryMonth} 
-                onChange={(e) => setSalaryMonth(e.target.value)} 
                 required 
               />
             </div>
