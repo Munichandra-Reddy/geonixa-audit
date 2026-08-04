@@ -4,41 +4,50 @@
   /* AI Futuristic Core Palette */
   --primary-color: #6366F1;
   --primary-hover: #4F46E5;
-  --primary-gradient: linear-gradient(135deg, #6366F1 0%, #8B5CF6 50%, #A855F7 100%);
-  --primary-glow: rgba(99, 102, 241, 0.25);
+  --primary-gradient: linear-gradient(135deg, #6366F1 0%, #8B5CF6 50%, #D946EF 100%);
+  --primary-glow: rgba(99, 102, 241, 0.35);
   
   --accent-cyan: #06B6D4;
   --accent-violet: #8B5CF6;
   --accent-fuchsia: #D946EF;
   --accent-amber: #F59E0B;
   
-  --bg-color: #FF7700;
-  --bg-gradient: linear-gradient(135deg, #FF6200 0%, #FF7F11 40%, #FF9E2C 100%);
+  /* Next-Gen AI Cosmic Dark Canvas */
+  --bg-color: #080C14;
+  --bg-gradient: radial-gradient(ellipse at 85% 0%, rgba(99, 102, 241, 0.18) 0%, transparent 60%),
+                 radial-gradient(ellipse at 15% 100%, rgba(217, 70, 239, 0.14) 0%, transparent 60%),
+                 radial-gradient(circle at 50% 50%, rgba(6, 182, 212, 0.08) 0%, transparent 70%),
+                 #080C14;
   
-  /* Light Orange Box Theme */
-  --card-bg: rgba(255, 247, 237, 0.95);
-  --card-bg-hover: rgba(255, 241, 226, 0.98);
+  /* High-Tech AI Frosted Glass Panels */
+  --card-bg: rgba(17, 24, 39, 0.82);
+  --card-bg-hover: rgba(30, 41, 59, 0.9);
   
-  --text-primary: #0F172A;
-  --text-secondary: #64748B;
-  --text-muted: #94A3B8;
+  /* Crisp AI Typography */
+  --text-primary: #F8FAFC;
+  --text-secondary: #94A3B8;
+  --text-muted: #64748B;
   
-  --border-color: #FED7AA;
+  /* AI Luminous Borders */
+  --border-color: rgba(148, 163, 184, 0.16);
   --border-focus: #818CF8;
   
+  /* Vibrant AI Status Colors */
   --success-color: #10B981;
-  --success-bg: rgba(16, 185, 129, 0.08);
-  --success-border: rgba(16, 185, 129, 0.25);
+  --success-bg: rgba(16, 185, 129, 0.12);
+  --success-border: rgba(16, 185, 129, 0.3);
   
   --danger-color: #F43F5E;
-  --danger-bg: rgba(244, 63, 94, 0.08);
-  --danger-border: rgba(244, 63, 94, 0.25);
+  --danger-bg: rgba(244, 63, 94, 0.12);
+  --danger-border: rgba(244, 63, 94, 0.3);
   
-  --input-bg: #FFFDF9;
-  --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px -1px rgba(0, 0, 0, 0.05);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
-  --shadow-lg: 0 10px 25px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -4px rgba(0, 0, 0, 0.04);
-  --shadow-glow: 0 0 20px -2px rgba(99, 102, 241, 0.25);
+  /* Deep Slate Inputs */
+  --input-bg: rgba(15, 23, 42, 0.88);
+  
+  --shadow-sm: 0 2px 8px 0 rgba(0, 0, 0, 0.35);
+  --shadow-md: 0 6px 16px -1px rgba(0, 0, 0, 0.45);
+  --shadow-lg: 0 16px 36px -4px rgba(0, 0, 0, 0.55);
+  --shadow-glow: 0 0 24px -2px rgba(99, 102, 241, 0.35);
 }
 
 * {
@@ -68,8 +77,8 @@ body {
 
 .glass-panel {
   background: var(--card-bg);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   border: 1px solid var(--border-color);
   border-radius: 16px;
   box-shadow: var(--shadow-lg);
@@ -77,7 +86,7 @@ body {
 }
 
 .glass-panel:hover {
-  border-color: rgba(99, 102, 241, 0.3);
+  border-color: rgba(99, 102, 241, 0.35);
 }
 
 .input-field {
@@ -96,12 +105,31 @@ body {
 
 .input-field:focus {
   border-color: var(--primary-color);
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.18);
-  background-color: var(--card-bg);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.25);
+  background-color: rgba(15, 23, 42, 0.95);
 }
 
 .input-field::placeholder {
   color: var(--text-muted);
+}
+
+/* Custom Webkit scrollbar for premium feel */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(8, 12, 20, 0.5);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.25);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(99, 102, 241, 0.5);
 }
 
 .btn-primary {
@@ -124,7 +152,7 @@ body {
 .btn-primary:hover {
   transform: translateY(-2px);
   box-shadow: 0 6px 20px 0 rgba(99, 102, 241, 0.45);
-  filter: brightness(1.05);
+  filter: brightness(1.08);
 }
 
 .btn-primary:active {
