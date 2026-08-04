@@ -15,7 +15,8 @@ const IncomeForm = () => {
   const [amount, setAmount] = useState('1000');
   const [count, setCount] = useState('1');
   const [monthCounts, setMonthCounts] = useState({});
-  const [postPrices, setPostPrices] = useState(['']);
+  const [postMonthPrices, setPostMonthPrices] = useState({});
+  const [activePostMonth, setActivePostMonth] = useState('');
   const [description, setDescription] = useState('');
   const [transactionDate, setTransactionDate] = useState(new Date().toISOString().split('T')[0]);
   const [viewMode, setViewMode] = useState('monthly');
@@ -31,29 +32,6 @@ const IncomeForm = () => {
       if (!isNaN(numCount) && numCount > 0) {
         setAmount((numCount * 1000).toString());
       } else if (count === '' || numCount === 0) {
-        setAmount('');
-      }
-    }
-  }, [category, count]);
-
-  // Sync postPrices array length with count for Post-payment
-  useEffect(() => {
-    if (category === 'Post-payment') {
-      const numCount = Math.max(0, parseInt(count, 10) || 0);
-      if (numCount > 0) {
-        setPostPrices(prev => {
-          const next = [...prev];
-          if (next.length < numCount) {
-            while (next.length < numCount) {
-              next.push('');
-            }
-          } else if (next.length > numCount) {
-            return next.slice(0, numCount);
-          }
-          return next;
-        });
-      } else {
-        setPostPrices([]);
         setAmount('');
       }
     }
@@ -76,6 +54,14 @@ const IncomeForm = () => {
     }
     return list;
   }, []);
+
+  // Set default active month to current month on load
+  useEffect(() => {
+    const currentMonth = generatedMonths.find(m => m.isCurrent);
+    if (currentMonth && !activePostMonth) {
+      setActivePostMonth(currentMonth.key);
+    }
+  }, [generatedMonths, activePostMonth]);
 
   // Auto-scroll so current month (e.g. August) is the first visible month by default
   useEffect(() => {
@@ -102,7 +88,7 @@ const IncomeForm = () => {
     }
   };
 
-  // Monthly count handler for month carousel cards
+  // Month count handler for month cards in both categories
   const handleMonthCountChange = (key, val) => {
     const cleanVal = val === '' ? '' : Math.max(0, parseInt(val, 10) || 0);
     const newMonthCounts = {
@@ -115,9 +101,79 @@ const IncomeForm = () => {
     }
 
     setMonthCounts(newMonthCounts);
+    setActivePostMonth(key);
 
     const total = Object.values(newMonthCounts).reduce((sum, v) => sum + (Number(v) || 0), 0);
     setCount(total > 0 ? total.toString() : '');
+
+    // If Post-payment, resize price array for this specific month
+    if (category === 'Post-payment') {
+      const num = Number(cleanVal) || 0;
+      setPostMonthPrices(prev => {
+        const currentPrices = prev[key] ? [...prev[key]] : [];
+        if (num > 0) {
+          if (currentPrices.length < num) {
+            while (currentPrices.length < num) currentPrices.push('');
+          } else if (currentPrices.length > num) {
+            currentPrices.length = num;
+          }
+        } else {
+          currentPrices.length = 0;
+        }
+
+        const updated = { ...prev, [key]: currentPrices };
+        if (num === 0) {
+          delete updated[key];
+        }
+
+        // Recalculate total amount across all months
+        const totalAllMonths = Object.values(updated).reduce((sum, pricesArr) => {
+          return sum + (pricesArr || []).reduce((mSum, p) => mSum + (Number(p) || 0), 0);
+        }, 0);
+
+        setAmount(totalAllMonths > 0 ? totalAllMonths.toString() : '');
+        return updated;
+      });
+    }
+  };
+
+  // Top Count input handler
+  const handleTopCountChange = (val) => {
+    const cleanVal = val === '' ? '' : Math.max(0, parseInt(val, 10) || 0);
+    setCount(val);
+
+    if (category === 'Post-payment') {
+      const targetMonthKey = activePostMonth || generatedMonths.find(m => m.isCurrent)?.key || generatedMonths[12]?.key;
+      setActivePostMonth(targetMonthKey);
+
+      const num = Number(cleanVal) || 0;
+      const newMonthCounts = { ...monthCounts, [targetMonthKey]: num };
+      if (num === 0) delete newMonthCounts[targetMonthKey];
+      setMonthCounts(newMonthCounts);
+
+      setPostMonthPrices(prev => {
+        const currentPrices = prev[targetMonthKey] ? [...prev[targetMonthKey]] : [];
+        if (num > 0) {
+          if (currentPrices.length < num) {
+            while (currentPrices.length < num) currentPrices.push('');
+          } else if (currentPrices.length > num) {
+            currentPrices.length = num;
+          }
+        } else {
+          currentPrices.length = 0;
+        }
+
+        const updated = { ...prev, [targetMonthKey]: currentPrices };
+        if (num === 0) delete updated[targetMonthKey];
+
+        const totalAllMonths = Object.values(updated).reduce((sum, pricesArr) => {
+          return sum + (pricesArr || []).reduce((mSum, p) => mSum + (Number(p) || 0), 0);
+        }, 0);
+
+        setAmount(totalAllMonths > 0 ? totalAllMonths.toString() : '');
+        return updated;
+      });
+    }
   };
 
   const totalCalculatedMonthCount = useMemo(() => {
@@ -130,24 +186,50 @@ const IncomeForm = () => {
     return activeEntries.map(([key, v]) => {
       const mObj = generatedMonths.find(m => m.key === key);
       const name = mObj ? mObj.monthName : key;
+      if (category === 'Post-payment') {
+        const prices = postMonthPrices[key] || [];
+        const validPrices = prices.filter(p => Number(p) > 0);
+        if (validPrices.length > 0) {
+          return `${name}: ${v} (₹${validPrices.join(', ₹')})`;
+        }
+      }
       return `${name}: ${v}`;
     }).join(', ');
-  }, [monthCounts, generatedMonths]);
+  }, [monthCounts, postMonthPrices, generatedMonths, category]);
 
-  // Individual price box change handler for Post-payment
-  const handleIndividualPriceChange = (index, val) => {
+  // Handler for individual price change in the active month
+  const handleActiveMonthPriceChange = (index, val) => {
+    if (!activePostMonth) return;
     const cleanVal = val === '' ? '' : Math.max(0, parseInt(val, 10) || 0);
-    const updated = [...postPrices];
-    updated[index] = cleanVal;
-    setPostPrices(updated);
+    const currentPrices = postMonthPrices[activePostMonth] ? [...postMonthPrices[activePostMonth]] : [];
+    currentPrices[index] = cleanVal;
 
-    const total = updated.reduce((sum, p) => sum + (Number(p) || 0), 0);
-    setAmount(total > 0 ? total.toString() : '');
+    const newPostMonthPrices = {
+      ...postMonthPrices,
+      [activePostMonth]: currentPrices
+    };
+    setPostMonthPrices(newPostMonthPrices);
+
+    // Sum across ALL months
+    const totalAllMonths = Object.values(newPostMonthPrices).reduce((sum, pricesArr) => {
+      return sum + (pricesArr || []).reduce((mSum, p) => mSum + (Number(p) || 0), 0);
+    }, 0);
+
+    setAmount(totalAllMonths > 0 ? totalAllMonths.toString() : '');
   };
 
-  const totalPostPricesSum = useMemo(() => {
-    return postPrices.reduce((sum, p) => sum + (Number(p) || 0), 0);
-  }, [postPrices]);
+  // Overall total price across all months in Post-payment
+  const totalAllPostPricesSum = useMemo(() => {
+    return Object.values(postMonthPrices).reduce((sum, pricesArr) => {
+      return sum + (pricesArr || []).reduce((mSum, p) => mSum + (Number(p) || 0), 0);
+    }, 0);
+  }, [postMonthPrices]);
+
+  // Total price for active month only
+  const activeMonthPricesSum = useMemo(() => {
+    if (!activePostMonth || !postMonthPrices[activePostMonth]) return 0;
+    return postMonthPrices[activePostMonth].reduce((sum, p) => sum + (Number(p) || 0), 0);
+  }, [postMonthPrices, activePostMonth]);
 
   const handleCategoryChange = (newCat) => {
     setCategory(newCat);
@@ -156,8 +238,7 @@ const IncomeForm = () => {
       setAmount((numCount * 1000).toString());
     } else {
       // Post-payment
-      const total = postPrices.reduce((sum, p) => sum + (Number(p) || 0), 0);
-      setAmount(total > 0 ? total.toString() : '');
+      setAmount(totalAllPostPricesSum > 0 ? totalAllPostPricesSum.toString() : '');
     }
   };
 
@@ -217,7 +298,7 @@ const IncomeForm = () => {
     setCount('1');
     setAmount(category === 'Pre-registration' ? '1000' : '');
     setMonthCounts({});
-    setPostPrices(['']);
+    setPostMonthPrices({});
     setDescription('');
     setTransactionDate(new Date().toISOString().split('T')[0]);
   };
@@ -229,14 +310,7 @@ const IncomeForm = () => {
     const tCount = t.count?.toString() || '1';
     setCount(tCount);
     setMonthCounts({});
-    if (t.category === 'Post-payment') {
-      const numC = parseInt(tCount, 10) || 1;
-      const initialPrices = Array(numC).fill('');
-      if (numC === 1) initialPrices[0] = t.amount;
-      setPostPrices(initialPrices);
-    } else {
-      setPostPrices(['']);
-    }
+    setPostMonthPrices({});
     setDescription(t.description || '');
     if (t.date) {
       setTransactionDate(new Date(t.date).toISOString().split('T')[0]);
@@ -252,11 +326,16 @@ const IncomeForm = () => {
         setCount('1');
         setAmount(category === 'Pre-registration' ? '1000' : '');
         setMonthCounts({});
-        setPostPrices(['']);
+        setPostMonthPrices({});
         setDescription('');
       }
     }
   };
+
+  // Active month info helper
+  const activeMonthObj = generatedMonths.find(m => m.key === activePostMonth);
+  const activeMonthPrices = (activePostMonth && postMonthPrices[activePostMonth]) || [];
+  const monthsWithCounts = Object.entries(monthCounts).filter(([_, cnt]) => Number(cnt) > 0);
 
   return (
     <div className="page-container">
@@ -306,10 +385,10 @@ const IncomeForm = () => {
                 type="number" 
                 className="input-field" 
                 value={count} 
-                onChange={(e) => setCount(e.target.value)} 
+                onChange={(e) => handleTopCountChange(e.target.value)} 
                 required 
                 min="1"
-                placeholder={category === 'Post-payment' ? 'Enter count (e.g. 10)' : 'Enter count or fill months below'}
+                placeholder={category === 'Post-payment' ? 'Enter count or enter in months below' : 'Enter count or fill months below'}
               />
 
               {/* 4-Month Scrollable Carousel (Clean Count input for all months) */}
@@ -343,10 +422,17 @@ const IncomeForm = () => {
                     {generatedMonths.map(m => {
                       const mVal = monthCounts[m.key] !== undefined ? monthCounts[m.key] : '';
                       const hasCount = Number(mVal) > 0;
+                      const isActivePost = category === 'Post-payment' && activePostMonth === m.key;
                       return (
                         <div 
                           key={m.key} 
-                          className={`month-card ${hasCount ? 'has-count' : ''} ${m.isCurrent ? 'is-current' : ''}`}
+                          className={`month-card ${hasCount ? 'has-count' : ''} ${m.isCurrent ? 'is-current' : ''} ${isActivePost ? 'is-active-post-month' : ''}`}
+                          onClick={() => {
+                            if (category === 'Post-payment') {
+                              setActivePostMonth(m.key);
+                            }
+                          }}
+                          style={{ cursor: category === 'Post-payment' ? 'pointer' : 'default' }}
                         >
                           <div className="month-card-header">
                             <span className="month-card-name">{m.monthName}</span>
@@ -358,6 +444,11 @@ const IncomeForm = () => {
                             placeholder="0"
                             min="0"
                             value={mVal}
+                            onFocus={() => {
+                              if (category === 'Post-payment') {
+                                setActivePostMonth(m.key);
+                              }
+                            }}
                             onChange={(e) => handleMonthCountChange(m.key, e.target.value)}
                           />
                         </div>
@@ -367,20 +458,51 @@ const IncomeForm = () => {
                 </div>
               </div>
 
-              {/* Post-payment Dynamic Price Pop-Out Boxes */}
-              {category === 'Post-payment' && Number(count) > 0 && (
+              {/* Post-payment Dynamic Price Pop-Out Boxes (Month Specific) */}
+              {category === 'Post-payment' && activeMonthPrices.length > 0 && (
                 <div className="post-prices-container">
+                  {/* Month Switcher Tabs if multiple months have counts */}
+                  {monthsWithCounts.length > 1 && (
+                    <div className="post-month-tabs">
+                      <span style={{ fontSize: '0.78rem', fontWeight: '700', color: 'var(--text-secondary)', marginRight: '4px' }}>
+                        Months:
+                      </span>
+                      {monthsWithCounts.map(([mKey, cnt]) => {
+                        const mObj = generatedMonths.find(m => m.key === mKey);
+                        const isTabActive = activePostMonth === mKey;
+                        return (
+                          <button
+                            key={mKey}
+                            type="button"
+                            className={`post-month-tab ${isTabActive ? 'active' : ''}`}
+                            onClick={() => setActivePostMonth(mKey)}
+                          >
+                            <span>{mObj ? mObj.monthName : mKey}</span>
+                            <span style={{ opacity: 0.8 }}>({cnt})</span>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  )}
+
                   <div className="post-prices-header">
                     <span className="post-prices-title">
-                      Enter Price for each of the {count} Count{Number(count) > 1 ? 's' : ''}:
+                      {activeMonthObj ? `${activeMonthObj.monthName} ${activeMonthObj.year}` : 'Active Month'} — Price for {activeMonthPrices.length} Count{activeMonthPrices.length > 1 ? 's' : ''}:
                     </span>
-                    <span className="post-prices-total-badge">
-                      Total Added: ₹{totalPostPricesSum.toLocaleString('en-IN')}
-                    </span>
+                    <div className="post-prices-badges">
+                      {monthsWithCounts.length > 1 && (
+                        <span className="post-prices-month-badge">
+                          Month Total: ₹{activeMonthPricesSum.toLocaleString('en-IN')}
+                        </span>
+                      )}
+                      <span className="post-prices-total-badge">
+                        Overall Total: ₹{totalAllPostPricesSum.toLocaleString('en-IN')}
+                      </span>
+                    </div>
                   </div>
 
                   <div className="post-prices-grid">
-                    {postPrices.map((prc, idx) => (
+                    {activeMonthPrices.map((prc, idx) => (
                       <div key={idx} className="post-price-item">
                         <span className="post-price-label">Price #{idx + 1}</span>
                         <div className="post-price-input-wrap">
@@ -391,7 +513,7 @@ const IncomeForm = () => {
                             placeholder="0"
                             min="0"
                             value={prc}
-                            onChange={(e) => handleIndividualPriceChange(idx, e.target.value)}
+                            onChange={(e) => handleActiveMonthPriceChange(idx, e.target.value)}
                             required
                           />
                         </div>

@@ -429,3 +429,60 @@
 .post-price-input:focus {
   border-color: var(--primary-color);
 }
+
+.month-card.is-active-post-month {
+  border-color: var(--primary-color) !important;
+  box-shadow: 0 0 0 2.5px rgba(99, 102, 241, 0.25) !important;
+  background: rgba(255, 241, 226, 0.98) !important;
+}
+
+.post-month-tabs {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+  padding-bottom: 4px;
+}
+
+.post-month-tab {
+  padding: 6px 12px;
+  border-radius: 8px;
+  border: 1.5px solid var(--border-color);
+  background: var(--card-bg);
+  color: var(--text-secondary);
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.post-month-tab:hover {
+  border-color: var(--primary-color);
+  color: var(--primary-color);
+}
+
+.post-month-tab.active {
+  border-color: var(--primary-color);
+  background: rgba(99, 102, 241, 0.12);
+  color: var(--primary-color);
+  font-weight: 700;
+}
+
+.post-prices-badges {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.post-prices-month-badge {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  background: rgba(0, 0, 0, 0.05);
+  padding: 4px 8px;
+  border-radius: 16px;
+}
