@@ -80,6 +80,27 @@ export const AppProvider = ({ children }) => {
     }
   };
 
+  const updateEmployee = async (updatedEmp) => {
+    const dbEmp = {
+      name: updatedEmp.name,
+      role: updatedEmp.role,
+      salary_month: updatedEmp.salaryMonth || '',
+      base_salary: updatedEmp.baseSalary,
+      join_date: updatedEmp.joinDate
+    };
+    const { data, error } = await supabase.from('employees').update(dbEmp).eq('id', updatedEmp.id).select();
+    if (!error && data) {
+      setEmployees(employees.map(e => e.id === updatedEmp.id ? { ...data[0], salaryMonth: data[0].salary_month, baseSalary: data[0].base_salary, joinDate: data[0].join_date } : e));
+    }
+  };
+
+  const deleteEmployee = async (id) => {
+    const { error } = await supabase.from('employees').delete().eq('id', id);
+    if (!error) {
+      setEmployees(employees.filter(e => e.id !== id));
+    }
+  };
+
   // Mentor Actions
   const addMentor = async (mentor) => {
     const dbMentor = {
@@ -165,6 +186,8 @@ export const AppProvider = ({ children }) => {
       logout,
       employees,
       addEmployee,
+      updateEmployee,
+      deleteEmployee,
       mentors,
       addMentor,
       updateMentor,
