@@ -332,7 +332,7 @@
 .post-prices-container {
   margin-top: 14px;
   padding: 16px;
-  background: rgba(15, 23, 42, 0.75);
+  background: rgba(248, 250, 252, 0.95);
   border: 1.5px solid var(--border-color);
   border-radius: 14px;
   display: flex;
@@ -390,7 +390,7 @@
 
 .post-price-item:focus-within {
   border-color: var(--primary-color);
-  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.25);
+  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.18);
 }
 
 .post-price-label {
@@ -432,8 +432,8 @@
 
 .month-card.is-active-post-month {
   border-color: var(--primary-color) !important;
-  box-shadow: 0 0 0 2.5px rgba(99, 102, 241, 0.35) !important;
-  background: rgba(30, 41, 59, 0.95) !important;
+  box-shadow: 0 0 0 2.5px rgba(99, 102, 241, 0.25) !important;
+  background: rgba(238, 242, 255, 0.95) !important;
 }
 
 .post-month-tabs {
@@ -466,8 +466,8 @@
 
 .post-month-tab.active {
   border-color: var(--primary-color);
-  background: rgba(99, 102, 241, 0.2);
-  color: #818CF8;
+  background: rgba(99, 102, 241, 0.12);
+  color: var(--primary-color);
   font-weight: 700;
 }
 
@@ -481,9 +481,9 @@
 .post-prices-month-badge {
   font-size: 0.78rem;
   font-weight: 700;
-  color: var(--text-primary);
-  background: rgba(99, 102, 241, 0.15);
-  border: 1px solid rgba(99, 102, 241, 0.25);
+  color: var(--primary-color);
+  background: rgba(99, 102, 241, 0.08);
+  border: 1px solid rgba(99, 102, 241, 0.2);
   padding: 4px 10px;
   border-radius: 16px;
 }
