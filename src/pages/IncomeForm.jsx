@@ -15,8 +15,7 @@ const IncomeForm = () => {
   const [amount, setAmount] = useState('1000');
   const [count, setCount] = useState('1');
   const [monthCounts, setMonthCounts] = useState({});
-  const [postMonthData, setPostMonthData] = useState({});
-  const [monthFilter, setMonthFilter] = useState('');
+  const [postPrices, setPostPrices] = useState(['']);
   const [description, setDescription] = useState('');
   const [transactionDate, setTransactionDate] = useState(new Date().toISOString().split('T')[0]);
   const [viewMode, setViewMode] = useState('monthly');
@@ -32,6 +31,29 @@ const IncomeForm = () => {
       if (!isNaN(numCount) && numCount > 0) {
         setAmount((numCount * 1000).toString());
       } else if (count === '' || numCount === 0) {
+        setAmount('');
+      }
+    }
+  }, [category, count]);
+
+  // Sync postPrices array length with count for Post-payment
+  useEffect(() => {
+    if (category === 'Post-payment') {
+      const numCount = Math.max(0, parseInt(count, 10) || 0);
+      if (numCount > 0) {
+        setPostPrices(prev => {
+          const next = [...prev];
+          if (next.length < numCount) {
+            while (next.length < numCount) {
+              next.push('');
+            }
+          } else if (next.length > numCount) {
+            return next.slice(0, numCount);
+          }
+          return next;
+        });
+      } else {
+        setPostPrices([]);
         setAmount('');
       }
     }
@@ -80,7 +102,7 @@ const IncomeForm = () => {
     }
   };
 
-  // Pre-registration monthly count handler
+  // Monthly count handler for month carousel cards
   const handleMonthCountChange = (key, val) => {
     const cleanVal = val === '' ? '' : Math.max(0, parseInt(val, 10) || 0);
     const newMonthCounts = {
@@ -112,58 +134,20 @@ const IncomeForm = () => {
     }).join(', ');
   }, [monthCounts, generatedMonths]);
 
-  // Post-payment monthly count & price handler
-  const handlePostMonthChange = (key, field, val) => {
+  // Individual price box change handler for Post-payment
+  const handleIndividualPriceChange = (index, val) => {
     const cleanVal = val === '' ? '' : Math.max(0, parseInt(val, 10) || 0);
-    const current = postMonthData[key] || { count: '', price: '' };
-    const updated = { ...current, [field]: cleanVal };
-    
-    const newPostData = { ...postMonthData, [key]: updated };
-    if ((updated.count === '' || updated.count === 0) && (updated.price === '' || updated.price === 0)) {
-      delete newPostData[key];
-    }
-    setPostMonthData(newPostData);
+    const updated = [...postPrices];
+    updated[index] = cleanVal;
+    setPostPrices(updated);
+
+    const total = updated.reduce((sum, p) => sum + (Number(p) || 0), 0);
+    setAmount(total > 0 ? total.toString() : '');
   };
 
-  const totalPostPrice = useMemo(() => {
-    return Object.values(postMonthData).reduce((sum, item) => {
-      const cnt = Number(item.count) || 0;
-      const prc = Number(item.price) || 0;
-      const itemTotal = cnt > 0 && prc > 0 ? cnt * prc : (prc > 0 ? prc : 0);
-      return sum + itemTotal;
-    }, 0);
-  }, [postMonthData]);
-
-  const totalPostCount = useMemo(() => {
-    return Object.values(postMonthData).reduce((sum, item) => {
-      return sum + (Number(item.count) || 0);
-    }, 0);
-  }, [postMonthData]);
-
-  const postBreakdownText = useMemo(() => {
-    const activeEntries = Object.entries(postMonthData).filter(([_, item]) => (Number(item.count) > 0 && Number(item.price) > 0) || Number(item.price) > 0);
-    if (activeEntries.length === 0) return '';
-    return activeEntries.map(([key, item]) => {
-      const mObj = generatedMonths.find(m => m.key === key);
-      const name = mObj ? mObj.monthName : key;
-      const cnt = Number(item.count) || 0;
-      const prc = Number(item.price) || 0;
-      const tot = cnt > 0 && prc > 0 ? cnt * prc : prc;
-      return cnt > 0 ? `${name}: ${cnt} × ₹${prc.toLocaleString('en-IN')} = ₹${tot.toLocaleString('en-IN')}` : `${name}: ₹${tot.toLocaleString('en-IN')}`;
-    }).join(', ');
-  }, [postMonthData, generatedMonths]);
-
-  // Auto-sync Amount for Post-payment from totalPostPrice
-  useEffect(() => {
-    if (category === 'Post-payment') {
-      if (totalPostPrice > 0) {
-        setAmount(totalPostPrice.toString());
-      }
-      if (totalPostCount > 0) {
-        setCount(totalPostCount.toString());
-      }
-    }
-  }, [category, totalPostPrice, totalPostCount]);
+  const totalPostPricesSum = useMemo(() => {
+    return postPrices.reduce((sum, p) => sum + (Number(p) || 0), 0);
+  }, [postPrices]);
 
   const handleCategoryChange = (newCat) => {
     setCategory(newCat);
@@ -171,11 +155,9 @@ const IncomeForm = () => {
       const numCount = Number(count) || (totalCalculatedMonthCount > 0 ? totalCalculatedMonthCount : 1);
       setAmount((numCount * 1000).toString());
     } else {
-      if (totalPostPrice > 0) {
-        setAmount(totalPostPrice.toString());
-      } else {
-        setAmount('');
-      }
+      // Post-payment
+      const total = postPrices.reduce((sum, p) => sum + (Number(p) || 0), 0);
+      setAmount(total > 0 ? total.toString() : '');
     }
   };
 
@@ -207,11 +189,7 @@ const IncomeForm = () => {
     e.preventDefault();
     if (!amount) return;
     
-    const finalCount = category === 'Post-payment'
-      ? (totalPostCount > 0 ? totalPostCount : (Number(count) || 1))
-      : (Number(count) || (totalCalculatedMonthCount > 0 ? totalCalculatedMonthCount : 1));
-
-    const finalBreakdown = category === 'Post-payment' ? postBreakdownText : monthBreakdownText;
+    const finalCount = Number(count) || (totalCalculatedMonthCount > 0 ? totalCalculatedMonthCount : 1);
 
     if (editingId) {
       const existingTx = transactions.find(t => t.id === editingId);
@@ -220,7 +198,7 @@ const IncomeForm = () => {
         category, 
         amount: Number(amount), 
         count: finalCount,
-        monthFilter: finalBreakdown,
+        monthFilter: monthBreakdownText,
         description,
         date: new Date(transactionDate).toISOString()
       });
@@ -231,7 +209,7 @@ const IncomeForm = () => {
         category, 
         amount: Number(amount), 
         count: finalCount,
-        monthFilter: finalBreakdown,
+        monthFilter: monthBreakdownText,
         description,
         date: new Date(transactionDate).toISOString()
       });
@@ -239,8 +217,7 @@ const IncomeForm = () => {
     setCount('1');
     setAmount(category === 'Pre-registration' ? '1000' : '');
     setMonthCounts({});
-    setPostMonthData({});
-    setMonthFilter('');
+    setPostPrices(['']);
     setDescription('');
     setTransactionDate(new Date().toISOString().split('T')[0]);
   };
@@ -249,10 +226,17 @@ const IncomeForm = () => {
     setEditingId(t.id);
     setCategory(t.category);
     setAmount(t.amount.toString());
-    setCount(t.count?.toString() || '1');
+    const tCount = t.count?.toString() || '1';
+    setCount(tCount);
     setMonthCounts({});
-    setPostMonthData({});
-    setMonthFilter(t.monthFilter || '');
+    if (t.category === 'Post-payment') {
+      const numC = parseInt(tCount, 10) || 1;
+      const initialPrices = Array(numC).fill('');
+      if (numC === 1) initialPrices[0] = t.amount;
+      setPostPrices(initialPrices);
+    } else {
+      setPostPrices(['']);
+    }
     setDescription(t.description || '');
     if (t.date) {
       setTransactionDate(new Date(t.date).toISOString().split('T')[0]);
@@ -268,8 +252,7 @@ const IncomeForm = () => {
         setCount('1');
         setAmount(category === 'Pre-registration' ? '1000' : '');
         setMonthCounts({});
-        setPostMonthData({});
-        setMonthFilter('');
+        setPostPrices(['']);
         setDescription('');
       }
     }
@@ -316,28 +299,24 @@ const IncomeForm = () => {
               />
             </div>
 
-            {/* In Pre-registration: Show top Count input. In Post-payment: "above total count don't need" */}
+            {/* Count input */}
             <div className="input-group">
-              {category === 'Pre-registration' && (
-                <>
-                  <label>Count</label>
-                  <input 
-                    type="number" 
-                    className="input-field" 
-                    value={count} 
-                    onChange={(e) => setCount(e.target.value)} 
-                    required 
-                    min="1"
-                    placeholder="Enter count or fill months below"
-                  />
-                </>
-              )}
+              <label>Count</label>
+              <input 
+                type="number" 
+                className="input-field" 
+                value={count} 
+                onChange={(e) => setCount(e.target.value)} 
+                required 
+                min="1"
+                placeholder={category === 'Post-payment' ? 'Enter count (e.g. 10)' : 'Enter count or fill months below'}
+              />
 
-              {/* 4-Month Scrollable Carousel */}
+              {/* 4-Month Scrollable Carousel (Clean Count input for all months) */}
               <div className="month-count-section">
                 <div className="month-count-header">
                   <span className="month-count-header-title">
-                    {category === 'Post-payment' ? 'Months (Count & Price per month - 4 visible)' : 'Months (4 visible, scroll for before/after)'}
+                    Months (4 visible, scroll for before/after)
                   </span>
                   <div className="month-carousel-nav">
                     <button 
@@ -362,84 +341,65 @@ const IncomeForm = () => {
                 <div className="month-carousel-container">
                   <div className="month-carousel-track" ref={carouselRef}>
                     {generatedMonths.map(m => {
-                      if (category === 'Post-payment') {
-                        const item = postMonthData[m.key] || {};
-                        const itemCnt = item.count !== undefined ? item.count : '';
-                        const itemPrc = item.price !== undefined ? item.price : '';
-                        const hasEntry = (Number(itemCnt) > 0 && Number(itemPrc) > 0) || Number(itemPrc) > 0;
-                        const cNum = Number(itemCnt) || 0;
-                        const pNum = Number(itemPrc) || 0;
-                        const monthTotal = cNum > 0 && pNum > 0 ? cNum * pNum : pNum;
-
-                        return (
-                          <div 
-                            key={m.key} 
-                            className={`month-card post-card ${hasEntry ? 'has-count' : ''} ${m.isCurrent ? 'is-current' : ''}`}
-                          >
-                            <div className="month-card-header">
-                              <span className="month-card-name">{m.monthName}</span>
-                              <span className="month-card-year">{m.year}</span>
-                            </div>
-                            <div className="month-post-boxes">
-                              <div className="month-input-wrap">
-                                <span className="month-input-sublabel">Count</span>
-                                <input 
-                                  type="number" 
-                                  className="month-count-input" 
-                                  placeholder="0"
-                                  min="0"
-                                  value={itemCnt}
-                                  onChange={(e) => handlePostMonthChange(m.key, 'count', e.target.value)}
-                                />
-                              </div>
-                              <div className="month-input-wrap">
-                                <span className="month-input-sublabel">Price (₹)</span>
-                                <input 
-                                  type="number" 
-                                  className="month-count-input" 
-                                  placeholder="0"
-                                  min="0"
-                                  value={itemPrc}
-                                  onChange={(e) => handlePostMonthChange(m.key, 'price', e.target.value)}
-                                />
-                              </div>
-                              <div className="month-input-wrap">
-                                <span className="month-input-sublabel">Total</span>
-                                <div className="month-calc-box">
-                                  {monthTotal > 0 ? `₹${monthTotal.toLocaleString('en-IN')}` : '₹0'}
-                                </div>
-                              </div>
-                            </div>
+                      const mVal = monthCounts[m.key] !== undefined ? monthCounts[m.key] : '';
+                      const hasCount = Number(mVal) > 0;
+                      return (
+                        <div 
+                          key={m.key} 
+                          className={`month-card ${hasCount ? 'has-count' : ''} ${m.isCurrent ? 'is-current' : ''}`}
+                        >
+                          <div className="month-card-header">
+                            <span className="month-card-name">{m.monthName}</span>
+                            <span className="month-card-year">{m.year}</span>
                           </div>
-                        );
-                      } else {
-                        // Pre-registration card (1 count input)
-                        const mVal = monthCounts[m.key] !== undefined ? monthCounts[m.key] : '';
-                        const hasCount = Number(mVal) > 0;
-                        return (
-                          <div 
-                            key={m.key} 
-                            className={`month-card ${hasCount ? 'has-count' : ''} ${m.isCurrent ? 'is-current' : ''}`}
-                          >
-                            <div className="month-card-header">
-                              <span className="month-card-name">{m.monthName}</span>
-                              <span className="month-card-year">{m.year}</span>
-                            </div>
-                            <input 
-                              type="number" 
-                              className="month-count-input" 
-                              placeholder="0"
-                              min="0"
-                              value={mVal}
-                              onChange={(e) => handleMonthCountChange(m.key, e.target.value)}
-                            />
-                          </div>
-                        );
-                      }
+                          <input 
+                            type="number" 
+                            className="month-count-input" 
+                            placeholder="0"
+                            min="0"
+                            value={mVal}
+                            onChange={(e) => handleMonthCountChange(m.key, e.target.value)}
+                          />
+                        </div>
+                      );
                     })}
                   </div>
                 </div>
               </div>
+
+              {/* Post-payment Dynamic Price Pop-Out Boxes */}
+              {category === 'Post-payment' && Number(count) > 0 && (
+                <div className="post-prices-container">
+                  <div className="post-prices-header">
+                    <span className="post-prices-title">
+                      Enter Price for each of the {count} Count{Number(count) > 1 ? 's' : ''}:
+                    </span>
+                    <span className="post-prices-total-badge">
+                      Total Added: ₹{totalPostPricesSum.toLocaleString('en-IN')}
+                    </span>
+                  </div>
+
+                  <div className="post-prices-grid">
+                    {postPrices.map((prc, idx) => (
+                      <div key={idx} className="post-price-item">
+                        <span className="post-price-label">Price #{idx + 1}</span>
+                        <div className="post-price-input-wrap">
+                          <span className="post-price-currency">₹</span>
+                          <input 
+                            type="number" 
+                            className="post-price-input" 
+                            placeholder="0"
+                            min="0"
+                            value={prc}
+                            onChange={(e) => handleIndividualPriceChange(idx, e.target.value)}
+                            required
+                          />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
 
             <div className="input-group">
