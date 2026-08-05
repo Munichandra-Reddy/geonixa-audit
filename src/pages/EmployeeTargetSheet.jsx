@@ -90,13 +90,6 @@ const EmployeeTargetSheet = () => {
       };
     });
 
-    // Also track "Unassigned / General" if needed
-    const unassignedKey = '__unassigned__';
-    let unassignedPreCount = 0;
-    let unassignedPreAmount = 0;
-    let unassignedPostCount = 0;
-    let unassignedPostAmount = 0;
-
     // Process each filtered transaction
     filteredTransactions.forEach(tx => {
       const isPre = tx.category === 'Pre-registration';
@@ -106,13 +99,6 @@ const EmployeeTargetSheet = () => {
       const monthFilterStr = tx.monthFilter || '';
       const descStr = tx.description || '';
       const combinedText = `${monthFilterStr} ${descStr}`.toLowerCase();
-
-      // Check if this transaction has individual breakdown lines like:
-      // "Student: John - Emp: Rahul Sharma - ₹2,500"
-      // or "Student: Alice - Emp: Priya Patel - ₹3,000"
-      const entryRegex = /(?:Student:\s*([^;,\n-]+))?(?:-?\s*Emp:\s*([^;,\n-]+))?(?:-?\s*₹?(\d[\d,]*))?/gi;
-      
-      let matchedAnyEmployee = false;
 
       // Check if employee name directly appears in combinedText
       const matchingEmployees = employees.filter(emp => {
@@ -132,7 +118,6 @@ const EmployeeTargetSheet = () => {
             empMap[key].postPayCount += txCount;
             empMap[key].postPayAmount += txAmount;
           }
-          matchedAnyEmployee = true;
         }
       } else if (matchingEmployees.length > 1) {
         // Multiple employees in one batch transaction - divide or attribute based on mentions
@@ -152,18 +137,6 @@ const EmployeeTargetSheet = () => {
             }
           }
         });
-        matchedAnyEmployee = true;
-      }
-
-      if (!matchedAnyEmployee) {
-        // Log to unassigned or general pool
-        if (isPre) {
-          unassignedPreCount += txCount;
-          unassignedPreAmount += txAmount;
-        } else if (isPost) {
-          unassignedPostCount += txCount;
-          unassignedPostAmount += txAmount;
-        }
       }
     });
 
@@ -182,29 +155,6 @@ const EmployeeTargetSheet = () => {
         conversionRate
       };
     });
-
-    // If there are unassigned income records, add General / Store record
-    if (unassignedPreCount > 0 || unassignedPostCount > 0) {
-      const pendingCount = Math.max(0, unassignedPreCount - unassignedPostCount);
-      const totalAmount = unassignedPreAmount + unassignedPostAmount;
-      const conversionRate = unassignedPreCount > 0 
-        ? Math.min(100, Math.round((unassignedPostCount / unassignedPreCount) * 100))
-        : (unassignedPostCount > 0 ? 100 : 0);
-
-      list.push({
-        id: 'unassigned-general',
-        name: 'Direct / Office Walk-in',
-        role: 'General Admissions',
-        preRegCount: unassignedPreCount,
-        preRegAmount: unassignedPreAmount,
-        postPayCount: unassignedPostCount,
-        postPayAmount: unassignedPostAmount,
-        pendingCount,
-        totalAmount,
-        conversionRate,
-        hasExplicitLogs: true
-      });
-    }
 
     return list;
   }, [employees, filteredTransactions]);
