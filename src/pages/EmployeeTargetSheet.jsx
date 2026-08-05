@@ -481,16 +481,9 @@ const EmployeeTargetSheet = () => {
 
                       {/* Total Amount */}
                       <td style={{ textAlign: 'right' }}>
-                        <div className="total-amount-cell">
-                          <span className="total-amount-text">
-                            ₹{emp.totalAmount.toLocaleString('en-IN')}
-                          </span>
-                          {emp.totalAmount > 0 && (
-                            <span className="conversion-text">
-                              {emp.conversionRate}% converted
-                            </span>
-                          )}
-                        </div>
+                        <span className="total-amount-text">
+                          ₹{emp.totalAmount.toLocaleString('en-IN')}
+                        </span>
                       </td>
                     </tr>
                   );
