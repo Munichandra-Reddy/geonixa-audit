@@ -9,6 +9,7 @@ import IncomeForm from './pages/IncomeForm';
 import ExpenseForm from './pages/ExpenseForm';
 import Employees from './pages/Employees';
 import Mentors from './pages/Mentors';
+import EmployeeTargetSheet from './pages/EmployeeTargetSheet';
 import Notifications from './pages/Notifications';
 
 function App() {
@@ -30,6 +31,7 @@ function App() {
           <Route path="expenses" element={<ExpenseForm />} />
           <Route path="employees" element={<Employees />} />
           <Route path="mentors" element={<Mentors />} />
+          <Route path="employee-target-sheet" element={<EmployeeTargetSheet />} />
           <Route path="notifications" element={<Notifications />} />
         </Route>
       </Routes>
