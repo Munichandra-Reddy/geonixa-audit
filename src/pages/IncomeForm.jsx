@@ -10,12 +10,14 @@ const monthNames = [
 ];
 
 const IncomeForm = () => {
-  const { transactions, addTransaction, updateTransaction, deleteTransaction } = useContext(AppContext);
+  const { transactions, addTransaction, updateTransaction, deleteTransaction, employees } = useContext(AppContext);
   const [category, setCategory] = useState('Pre-registration');
   const [amount, setAmount] = useState('1000');
   const [count, setCount] = useState('1');
   const [monthCounts, setMonthCounts] = useState({});
   const [postMonthPrices, setPostMonthPrices] = useState({});
+  const [postMonthEmployees, setPostMonthEmployees] = useState({});
+  const [postMonthStudents, setPostMonthStudents] = useState({});
   const [activePostMonth, setActivePostMonth] = useState('');
   const [description, setDescription] = useState('');
   const [transactionDate, setTransactionDate] = useState(new Date().toISOString().split('T')[0]);
@@ -55,13 +57,37 @@ const IncomeForm = () => {
     return list;
   }, []);
 
-  // Set default active month to current month on load
+  // Set default active month and initialize count 1 on load
   useEffect(() => {
     const currentMonth = generatedMonths.find(m => m.isCurrent);
     if (currentMonth && !activePostMonth) {
       setActivePostMonth(currentMonth.key);
+      setMonthCounts(prev => {
+        if (Object.keys(prev).length === 0) {
+          return { [currentMonth.key]: 1 };
+        }
+        return prev;
+      });
+      setPostMonthPrices(prev => {
+        if (Object.keys(prev).length === 0) {
+          return { [currentMonth.key]: [category === 'Pre-registration' ? '1000' : ''] };
+        }
+        return prev;
+      });
+      setPostMonthEmployees(prev => {
+        if (Object.keys(prev).length === 0) {
+          return { [currentMonth.key]: [''] };
+        }
+        return prev;
+      });
+      setPostMonthStudents(prev => {
+        if (Object.keys(prev).length === 0) {
+          return { [currentMonth.key]: [''] };
+        }
+        return prev;
+      });
     }
-  }, [generatedMonths, activePostMonth]);
+  }, [generatedMonths, activePostMonth, category]);
 
   // Auto-scroll so current month (e.g. August) is the first visible month by default
   useEffect(() => {
@@ -106,35 +132,64 @@ const IncomeForm = () => {
     const total = Object.values(newMonthCounts).reduce((sum, v) => sum + (Number(v) || 0), 0);
     setCount(total > 0 ? total.toString() : '');
 
-    // If Post-payment, resize price array for this specific month
-    if (category === 'Post-payment') {
-      const num = Number(cleanVal) || 0;
-      setPostMonthPrices(prev => {
-        const currentPrices = prev[key] ? [...prev[key]] : [];
-        if (num > 0) {
-          if (currentPrices.length < num) {
-            while (currentPrices.length < num) currentPrices.push('');
-          } else if (currentPrices.length > num) {
-            currentPrices.length = num;
-          }
-        } else {
-          currentPrices.length = 0;
-        }
+    const num = Number(cleanVal) || 0;
 
-        const updated = { ...prev, [key]: currentPrices };
-        if (num === 0) {
-          delete updated[key];
+    // Resize price array for this month
+    setPostMonthPrices(prev => {
+      const currentPrices = prev[key] ? [...prev[key]] : [];
+      if (num > 0) {
+        while (currentPrices.length < num) {
+          currentPrices.push(category === 'Pre-registration' ? '1000' : '');
         }
+        if (currentPrices.length > num) {
+          currentPrices.length = num;
+        }
+      } else {
+        currentPrices.length = 0;
+      }
 
-        // Recalculate total amount across all months
+      const updated = { ...prev, [key]: currentPrices };
+      if (num === 0) delete updated[key];
+
+      if (category === 'Post-payment') {
         const totalAllMonths = Object.values(updated).reduce((sum, pricesArr) => {
           return sum + (pricesArr || []).reduce((mSum, p) => mSum + (Number(p) || 0), 0);
         }, 0);
-
         setAmount(totalAllMonths > 0 ? totalAllMonths.toString() : '');
-        return updated;
-      });
-    }
+      } else if (category === 'Pre-registration') {
+        setAmount(total > 0 ? (total * 1000).toString() : '');
+      }
+
+      return updated;
+    });
+
+    // Resize employees array for this month
+    setPostMonthEmployees(prev => {
+      const current = prev[key] ? [...prev[key]] : [];
+      if (num > 0) {
+        while (current.length < num) current.push('');
+        if (current.length > num) current.length = num;
+      } else {
+        current.length = 0;
+      }
+      const updated = { ...prev, [key]: current };
+      if (num === 0) delete updated[key];
+      return updated;
+    });
+
+    // Resize students array for this month
+    setPostMonthStudents(prev => {
+      const current = prev[key] ? [...prev[key]] : [];
+      if (num > 0) {
+        while (current.length < num) current.push('');
+        if (current.length > num) current.length = num;
+      } else {
+        current.length = 0;
+      }
+      const updated = { ...prev, [key]: current };
+      if (num === 0) delete updated[key];
+      return updated;
+    });
   };
 
   // Top Count input handler
@@ -142,8 +197,8 @@ const IncomeForm = () => {
     const cleanVal = val === '' ? '' : Math.max(0, parseInt(val, 10) || 0);
     setCount(val);
 
-    if (category === 'Post-payment') {
-      const targetMonthKey = activePostMonth || generatedMonths.find(m => m.isCurrent)?.key || generatedMonths[12]?.key;
+    const targetMonthKey = activePostMonth || generatedMonths.find(m => m.isCurrent)?.key || generatedMonths[12]?.key;
+    if (targetMonthKey) {
       setActivePostMonth(targetMonthKey);
 
       const num = Number(cleanVal) || 0;
@@ -154,9 +209,10 @@ const IncomeForm = () => {
       setPostMonthPrices(prev => {
         const currentPrices = prev[targetMonthKey] ? [...prev[targetMonthKey]] : [];
         if (num > 0) {
-          if (currentPrices.length < num) {
-            while (currentPrices.length < num) currentPrices.push('');
-          } else if (currentPrices.length > num) {
+          while (currentPrices.length < num) {
+            currentPrices.push(category === 'Pre-registration' ? '1000' : '');
+          }
+          if (currentPrices.length > num) {
             currentPrices.length = num;
           }
         } else {
@@ -166,11 +222,41 @@ const IncomeForm = () => {
         const updated = { ...prev, [targetMonthKey]: currentPrices };
         if (num === 0) delete updated[targetMonthKey];
 
-        const totalAllMonths = Object.values(updated).reduce((sum, pricesArr) => {
-          return sum + (pricesArr || []).reduce((mSum, p) => mSum + (Number(p) || 0), 0);
-        }, 0);
+        if (category === 'Post-payment') {
+          const totalAllMonths = Object.values(updated).reduce((sum, pricesArr) => {
+            return sum + (pricesArr || []).reduce((mSum, p) => mSum + (Number(p) || 0), 0);
+          }, 0);
+          setAmount(totalAllMonths > 0 ? totalAllMonths.toString() : '');
+        } else if (category === 'Pre-registration') {
+          setAmount(num > 0 ? (num * 1000).toString() : '');
+        }
 
-        setAmount(totalAllMonths > 0 ? totalAllMonths.toString() : '');
+        return updated;
+      });
+
+      setPostMonthEmployees(prev => {
+        const current = prev[targetMonthKey] ? [...prev[targetMonthKey]] : [];
+        if (num > 0) {
+          while (current.length < num) current.push('');
+          if (current.length > num) current.length = num;
+        } else {
+          current.length = 0;
+        }
+        const updated = { ...prev, [targetMonthKey]: current };
+        if (num === 0) delete updated[targetMonthKey];
+        return updated;
+      });
+
+      setPostMonthStudents(prev => {
+        const current = prev[targetMonthKey] ? [...prev[targetMonthKey]] : [];
+        if (num > 0) {
+          while (current.length < num) current.push('');
+          if (current.length > num) current.length = num;
+        } else {
+          current.length = 0;
+        }
+        const updated = { ...prev, [targetMonthKey]: current };
+        if (num === 0) delete updated[targetMonthKey];
         return updated;
       });
     }
@@ -186,16 +272,34 @@ const IncomeForm = () => {
     return activeEntries.map(([key, v]) => {
       const mObj = generatedMonths.find(m => m.key === key);
       const name = mObj ? mObj.monthName : key;
-      if (category === 'Post-payment') {
-        const prices = postMonthPrices[key] || [];
-        const validPrices = prices.filter(p => Number(p) > 0);
-        if (validPrices.length > 0) {
-          return `${name}: ${v} (₹${validPrices.join(', ₹')})`;
+      const prices = postMonthPrices[key] || [];
+      const emps = postMonthEmployees[key] || [];
+      const students = postMonthStudents[key] || [];
+
+      const detailsList = [];
+      const num = Number(v) || 0;
+      for (let i = 0; i < num; i++) {
+        const p = prices[i];
+        const emp = emps[i];
+        const std = students[i];
+        const parts = [];
+        if (std) parts.push(`Student: ${std}`);
+        if (emp) parts.push(`Emp: ${emp}`);
+        if (p && Number(p) > 0) parts.push(`₹${p}`);
+        if (parts.length > 0) {
+          detailsList.push(parts.join(' - '));
         }
+      }
+
+      if (detailsList.length > 0) {
+        return `${name}: ${v} (${detailsList.join('; ')})`;
+      } else if (prices.some(p => Number(p) > 0)) {
+        const validPrices = prices.filter(p => Number(p) > 0);
+        return `${name}: ${v} (₹${validPrices.join(', ₹')})`;
       }
       return `${name}: ${v}`;
     }).join(', ');
-  }, [monthCounts, postMonthPrices, generatedMonths, category]);
+  }, [monthCounts, postMonthPrices, postMonthEmployees, postMonthStudents, generatedMonths, category]);
 
   // Handler for individual price change in the active month
   const handleActiveMonthPriceChange = (index, val) => {
@@ -216,6 +320,28 @@ const IncomeForm = () => {
     }, 0);
 
     setAmount(totalAllMonths > 0 ? totalAllMonths.toString() : '');
+  };
+
+  // Handler for individual employee change in the active month
+  const handleActiveMonthEmployeeChange = (index, val) => {
+    if (!activePostMonth) return;
+    const currentEmps = postMonthEmployees[activePostMonth] ? [...postMonthEmployees[activePostMonth]] : [];
+    currentEmps[index] = val;
+    setPostMonthEmployees({
+      ...postMonthEmployees,
+      [activePostMonth]: currentEmps
+    });
+  };
+
+  // Handler for individual student change in the active month
+  const handleActiveMonthStudentChange = (index, val) => {
+    if (!activePostMonth) return;
+    const currentStudents = postMonthStudents[activePostMonth] ? [...postMonthStudents[activePostMonth]] : [];
+    currentStudents[index] = val;
+    setPostMonthStudents({
+      ...postMonthStudents,
+      [activePostMonth]: currentStudents
+    });
   };
 
   // Overall total price across all months in Post-payment
@@ -426,6 +552,8 @@ const IncomeForm = () => {
     setAmount(category === 'Pre-registration' ? '1000' : '');
     setMonthCounts({});
     setPostMonthPrices({});
+    setPostMonthEmployees({});
+    setPostMonthStudents({});
     setDescription('');
     setTransactionDate(new Date().toISOString().split('T')[0]);
   };
@@ -438,6 +566,8 @@ const IncomeForm = () => {
     setCount(tCount);
     setMonthCounts({});
     setPostMonthPrices({});
+    setPostMonthEmployees({});
+    setPostMonthStudents({});
     setDescription(t.description || '');
     if (t.date) {
       setTransactionDate(new Date(t.date).toISOString().split('T')[0]);
@@ -454,6 +584,8 @@ const IncomeForm = () => {
         setAmount(category === 'Pre-registration' ? '1000' : '');
         setMonthCounts({});
         setPostMonthPrices({});
+        setPostMonthEmployees({});
+        setPostMonthStudents({});
         setDescription('');
       }
     }
@@ -585,8 +717,8 @@ const IncomeForm = () => {
                 </div>
               </div>
 
-              {/* Post-payment Dynamic Price Pop-Out Boxes (Month Specific) */}
-              {category === 'Post-payment' && activeMonthPrices.length > 0 && (
+              {/* Dynamic Price, Employee Name & Student Name Pop-Out Boxes */}
+              {activeMonthPrices.length > 0 && (
                 <div className="post-prices-container">
                   {/* Month Switcher Tabs if multiple months have counts */}
                   {monthsWithCounts.length > 1 && (
@@ -614,35 +746,76 @@ const IncomeForm = () => {
 
                   <div className="post-prices-header">
                     <span className="post-prices-title">
-                      {activeMonthObj ? `${activeMonthObj.monthName} ${activeMonthObj.year}` : 'Active Month'} — Price for {activeMonthPrices.length} Count{activeMonthPrices.length > 1 ? 's' : ''}:
+                      {activeMonthObj ? `${activeMonthObj.monthName} ${activeMonthObj.year}` : 'Active Month'} — Details for {activeMonthPrices.length} Count{activeMonthPrices.length > 1 ? 's' : ''}:
                     </span>
                     <div className="post-prices-badges">
-                      {monthsWithCounts.length > 1 && (
+                      {monthsWithCounts.length > 1 && category === 'Post-payment' && (
                         <span className="post-prices-month-badge">
                           Month Total: ₹{activeMonthPricesSum.toLocaleString('en-IN')}
                         </span>
                       )}
                       <span className="post-prices-total-badge">
-                        Overall Total: ₹{totalAllPostPricesSum.toLocaleString('en-IN')}
+                        Overall Total: ₹{category === 'Pre-registration' ? (Number(count || 1) * 1000).toLocaleString('en-IN') : totalAllPostPricesSum.toLocaleString('en-IN')}
                       </span>
                     </div>
                   </div>
 
-                  <div className="post-prices-grid">
+                  {/* Datalist for Employee Name suggestions */}
+                  <datalist id="employee-suggestions">
+                    {(employees || []).map(emp => (
+                      <option key={emp.id} value={emp.name}>{emp.name} ({emp.role})</option>
+                    ))}
+                  </datalist>
+
+                  <div className="post-entries-grid">
                     {activeMonthPrices.map((prc, idx) => (
-                      <div key={idx} className="post-price-item">
-                        <span className="post-price-label">Price #{idx + 1}</span>
-                        <div className="post-price-input-wrap">
-                          <span className="post-price-currency">₹</span>
-                          <input 
-                            type="number" 
-                            className="post-price-input" 
-                            placeholder="0"
-                            min="0"
-                            value={prc}
-                            onChange={(e) => handleActiveMonthPriceChange(idx, e.target.value)}
-                            required
-                          />
+                      <div key={idx} className="post-entry-card">
+                        <div className="post-entry-card-header">
+                          <span className="post-entry-number">Entry #{idx + 1}</span>
+                        </div>
+
+                        <div className="post-entry-fields">
+                          {/* Price Box */}
+                          <div className="post-field-group">
+                            <label className="post-field-label">Price (₹)</label>
+                            <div className="post-price-input-wrap">
+                              <span className="post-price-currency">₹</span>
+                              <input 
+                                type="number" 
+                                className="post-price-input" 
+                                placeholder="0"
+                                min="0"
+                                value={prc}
+                                onChange={(e) => handleActiveMonthPriceChange(idx, e.target.value)}
+                                required
+                              />
+                            </div>
+                          </div>
+
+                          {/* Employee Name Box */}
+                          <div className="post-field-group">
+                            <label className="post-field-label">Employee Name</label>
+                            <input 
+                              type="text" 
+                              list="employee-suggestions"
+                              className="post-text-input" 
+                              placeholder="Choose or type employee"
+                              value={postMonthEmployees[activePostMonth]?.[idx] || ''}
+                              onChange={(e) => handleActiveMonthEmployeeChange(idx, e.target.value)}
+                            />
+                          </div>
+
+                          {/* Student Name Box */}
+                          <div className="post-field-group">
+                            <label className="post-field-label">Student Name</label>
+                            <input 
+                              type="text" 
+                              className="post-text-input" 
+                              placeholder="Enter student name"
+                              value={postMonthStudents[activePostMonth]?.[idx] || ''}
+                              onChange={(e) => handleActiveMonthStudentChange(idx, e.target.value)}
+                            />
+                          </div>
                         </div>
                       </div>
                     ))}

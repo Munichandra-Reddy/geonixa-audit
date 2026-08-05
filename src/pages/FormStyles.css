@@ -415,7 +415,7 @@
 
 .post-price-input {
   width: 100%;
-  padding: 6px 8px;
+  padding: 8px 10px;
   border-radius: 8px;
   border: 1.5px solid var(--border-color);
   background: var(--input-bg);
@@ -424,10 +424,103 @@
   color: var(--text-primary);
   outline: none;
   font-family: inherit;
+  transition: all 0.2s ease;
 }
 
 .post-price-input:focus {
   border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.15);
+}
+
+/* Dynamic Entry Cards (Price, Employee Name, Student Name) */
+.post-entries-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-height: 380px;
+  overflow-y: auto;
+  padding: 4px 2px;
+}
+
+.post-entry-card {
+  background: var(--card-bg, #ffffff);
+  border: 1.5px solid var(--border-color);
+  border-radius: 12px;
+  padding: 12px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: all 0.2s ease;
+  box-shadow: var(--shadow-sm);
+}
+
+.post-entry-card:focus-within {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.15);
+}
+
+.post-entry-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.post-entry-number {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--primary-color);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  background: rgba(99, 102, 241, 0.08);
+  padding: 2px 8px;
+  border-radius: 6px;
+}
+
+.post-entry-fields {
+  display: grid;
+  grid-template-columns: 1fr 1.3fr 1.3fr;
+  gap: 12px;
+  align-items: center;
+}
+
+@media (max-width: 640px) {
+  .post-entry-fields {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+}
+
+.post-field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.post-field-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.post-text-input {
+  width: 100%;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1.5px solid var(--border-color);
+  background: var(--input-bg);
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  outline: none;
+  font-family: inherit;
+  transition: all 0.2s ease;
+}
+
+.post-text-input:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.15);
 }
 
 .month-card.is-active-post-month {
