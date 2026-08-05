@@ -487,3 +487,236 @@
   padding: 4px 10px;
   border-radius: 16px;
 }
+
+/* Recent Income Month Summary Section */
+.recent-income-month-summary {
+  margin-top: 24px;
+  padding: 20px;
+  background: rgba(248, 250, 252, 0.95);
+  border: 1.5px solid var(--border-color);
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.month-summary-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.month-summary-title-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.month-summary-title {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.month-summary-subtitle {
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+}
+
+.month-summary-total-pills {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.summary-pill {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  border: 1px solid transparent;
+  box-shadow: var(--shadow-sm);
+}
+
+.summary-pill .pill-label {
+  font-weight: 600;
+  opacity: 0.85;
+}
+
+.summary-pill.total-pill {
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.15), rgba(139, 92, 246, 0.15));
+  border-color: rgba(99, 102, 241, 0.3);
+  color: var(--primary-color);
+}
+
+.summary-pill.prereg-pill {
+  background: rgba(99, 102, 241, 0.08);
+  border-color: rgba(99, 102, 241, 0.2);
+  color: var(--primary-color);
+}
+
+.summary-pill.postpay-pill {
+  background: rgba(139, 92, 246, 0.08);
+  border-color: rgba(139, 92, 246, 0.2);
+  color: var(--accent-violet, #8b5cf6);
+}
+
+.summary-pill.amount-pill {
+  background: rgba(16, 185, 129, 0.1);
+  border-color: rgba(16, 185, 129, 0.25);
+  color: var(--success-color, #10b981);
+}
+
+.month-summary-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 12px;
+}
+
+.month-summary-card {
+  background: var(--card-bg, #ffffff);
+  border: 1.5px solid var(--border-color);
+  border-radius: 12px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: all 0.2s ease;
+  box-shadow: var(--shadow-sm);
+}
+
+.month-summary-card:hover {
+  border-color: var(--primary-color);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(99, 102, 241, 0.1);
+}
+
+.m-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.m-card-month-badge {
+  display: flex;
+  align-items: baseline;
+  gap: 5px;
+}
+
+.m-card-name {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.m-card-year {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.m-card-count-badge {
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.12), rgba(139, 92, 246, 0.12));
+  border: 1px solid rgba(99, 102, 241, 0.25);
+  padding: 3px 10px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.m-card-count-badge .count-label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+}
+
+.m-card-count-badge .count-val {
+  font-size: 0.9rem;
+  font-weight: 800;
+  color: var(--primary-color);
+}
+
+.m-card-divider {
+  height: 1px;
+  background: var(--border-color);
+  width: 100%;
+}
+
+.m-card-breakdown {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.m-breakdown-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.8rem;
+}
+
+.m-breakdown-cat {
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-weight: 500;
+}
+
+.cat-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.cat-dot.prereg-dot {
+  background: var(--primary-color);
+}
+
+.cat-dot.postpay-dot {
+  background: var(--accent-violet, #8b5cf6);
+}
+
+.m-breakdown-val {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.m-breakdown-subamt {
+  font-size: 0.72rem;
+  color: var(--success-color, #10b981);
+  font-weight: 500;
+}
+
+.m-card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 6px;
+  border-top: 1px dashed var(--border-color);
+  font-size: 0.82rem;
+}
+
+.m-card-total-label {
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.m-card-total-amount {
+  font-weight: 700;
+  color: var(--success-color, #10b981);
+}

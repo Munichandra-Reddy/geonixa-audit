@@ -1,7 +1,7 @@
 "use client";
 import { useState, useContext, useMemo, useRef, useEffect } from 'react';
 import { AppContext } from '../context/AppContext';
-import { Receipt, Plus, Edit2, Trash2, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Receipt, Plus, Edit2, Trash2, ChevronLeft, ChevronRight, Calendar } from 'lucide-react';
 import './FormStyles.css';
 
 const monthNames = [
@@ -264,6 +264,133 @@ const IncomeForm = () => {
 
   const totalIncome = useMemo(() => {
     return filteredData.reduce((sum, t) => sum + t.amount, 0);
+  }, [filteredData]);
+
+  const totalCount = useMemo(() => {
+    return filteredData.reduce((sum, t) => sum + (Number(t.count) || 1), 0);
+  }, [filteredData]);
+
+  const totalPreRegCount = useMemo(() => {
+    return filteredData
+      .filter(t => t.category === 'Pre-registration')
+      .reduce((sum, t) => sum + (Number(t.count) || 1), 0);
+  }, [filteredData]);
+
+  const totalPostPayCount = useMemo(() => {
+    return filteredData
+      .filter(t => t.category === 'Post-payment')
+      .reduce((sum, t) => sum + (Number(t.count) || 1), 0);
+  }, [filteredData]);
+
+  const parseMonthFilter = (monthFilterStr, defaultDate, category, totalAmount, count) => {
+    if (!monthFilterStr || typeof monthFilterStr !== 'string') {
+      const d = new Date(defaultDate);
+      const mName = !isNaN(d.getTime()) ? monthNames[d.getMonth()] : 'Unknown';
+      const year = !isNaN(d.getTime()) ? d.getFullYear() : '';
+      return [{
+        monthKey: `${mName} ${year}`.trim(),
+        monthName: mName,
+        year: year,
+        count: Number(count) || 1,
+        category: category,
+        amount: Number(totalAmount) || 0
+      }];
+    }
+
+    const regex = /(January|February|March|April|May|June|July|August|September|October|November|December)(?:\s+(\d{4}))?\s*:\s*(\d+)(?:\s*\(([^)]+)\))?/gi;
+    const results = [];
+    let match;
+
+    while ((match = regex.exec(monthFilterStr)) !== null) {
+      const monthName = match[1];
+      const year = match[2] || (defaultDate ? new Date(defaultDate).getFullYear() : '');
+      const cnt = parseInt(match[3], 10) || 0;
+      const pricesStr = match[4];
+      
+      let monthAmount = 0;
+      if (pricesStr) {
+        const priceNumbers = pricesStr.match(/\d[\d,]*/g);
+        if (priceNumbers) {
+          monthAmount = priceNumbers.reduce((sum, p) => sum + (parseInt(p.replace(/,/g, ''), 10) || 0), 0);
+        }
+      }
+      
+      if (monthAmount === 0 && cnt > 0) {
+        if (category === 'Pre-registration') {
+          monthAmount = cnt * 1000;
+        } else {
+          const totalCnt = Number(count) || cnt;
+          monthAmount = totalCnt > 0 ? Math.round((Number(totalAmount) || 0) * (cnt / totalCnt)) : Number(totalAmount) || 0;
+        }
+      }
+
+      results.push({
+        monthKey: year ? `${monthName} ${year}` : monthName,
+        monthName,
+        year,
+        count: cnt,
+        category,
+        amount: monthAmount
+      });
+    }
+
+    if (results.length === 0) {
+      const d = new Date(defaultDate);
+      const mName = !isNaN(d.getTime()) ? monthNames[d.getMonth()] : 'Unknown';
+      const year = !isNaN(d.getTime()) ? d.getFullYear() : '';
+      return [{
+        monthKey: `${mName} ${year}`.trim(),
+        monthName: mName,
+        year: year,
+        count: Number(count) || 1,
+        category: category,
+        amount: Number(totalAmount) || 0
+      }];
+    }
+
+    return results;
+  };
+
+  const monthWiseData = useMemo(() => {
+    const monthMap = {};
+
+    filteredData.forEach(t => {
+      const parsedEntries = parseMonthFilter(t.monthFilter, t.date, t.category, t.amount, t.count);
+      parsedEntries.forEach(entry => {
+        const key = entry.monthKey;
+        if (!monthMap[key]) {
+          monthMap[key] = {
+            monthKey: key,
+            monthName: entry.monthName,
+            year: entry.year,
+            totalCount: 0,
+            totalAmount: 0,
+            preRegCount: 0,
+            preRegAmount: 0,
+            postPayCount: 0,
+            postPayAmount: 0
+          };
+        }
+        monthMap[key].totalCount += entry.count;
+        monthMap[key].totalAmount += entry.amount;
+        if (entry.category === 'Pre-registration') {
+          monthMap[key].preRegCount += entry.count;
+          monthMap[key].preRegAmount += entry.amount;
+        } else if (entry.category === 'Post-payment') {
+          monthMap[key].postPayCount += entry.count;
+          monthMap[key].postPayAmount += entry.amount;
+        }
+      });
+    });
+
+    return Object.values(monthMap).sort((a, b) => {
+      const yearA = parseInt(a.year, 10) || 0;
+      const yearB = parseInt(b.year, 10) || 0;
+      if (yearA !== yearB) return yearA - yearB;
+      const mIdxA = monthNames.indexOf(a.monthName);
+      const mIdxB = monthNames.indexOf(b.monthName);
+      return mIdxA - mIdxB;
+    });
   }, [filteredData]);
 
   const handleSubmit = (e) => {
@@ -598,38 +725,129 @@ const IncomeForm = () => {
           {filteredData.length === 0 ? (
             <p className="text-secondary">No income logged for this period.</p>
           ) : (
-            <table className="data-table">
-              <thead>
-                <tr>
-                  <th>Date</th>
-                  <th>Category</th>
-                  <th>Count</th>
-                  <th>Amount (₹)</th>
-                  <th style={{ textAlign: 'right' }}>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredData.slice().reverse().map((t) => (
-                  <tr key={t.id}>
-                    <td>{new Date(t.date).toLocaleDateString()}</td>
-                    <td><strong>{t.category}</strong></td>
-                    <td>{t.count || 1}</td>
-                    <td className="text-success font-semibold">+₹{t.amount.toLocaleString('en-IN')}</td>
-                    <td style={{ textAlign: 'right' }}>
-                      <button type="button" onClick={() => handleEdit(t)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-secondary)', marginRight: '16px' }} title="Edit"><Edit2 size={18} /></button>
-                      <button type="button" onClick={() => handleDelete(t.id)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--danger-color)' }} title="Delete"><Trash2 size={18} /></button>
-                    </td>
+            <>
+              <table className="data-table">
+                <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th>Category</th>
+                    <th>Count</th>
+                    <th>Amount (₹)</th>
+                    <th style={{ textAlign: 'right' }}>Actions</th>
                   </tr>
-                ))}
-              </tbody>
-              <tfoot>
-                <tr>
-                  <td colSpan="3" style={{ textAlign: 'right', fontWeight: '700', padding: '16px' }}>Total Income:</td>
-                  <td className="text-success" style={{ fontWeight: '700', fontSize: '1.1rem', padding: '16px' }}>+₹{totalIncome.toLocaleString('en-IN')}</td>
-                  <td></td>
-                </tr>
-              </tfoot>
-            </table>
+                </thead>
+                <tbody>
+                  {filteredData.slice().reverse().map((t) => (
+                    <tr key={t.id}>
+                      <td>{new Date(t.date).toLocaleDateString()}</td>
+                      <td>
+                        <strong>{t.category}</strong>
+                        {t.monthFilter && (
+                          <div style={{ fontSize: '0.76rem', color: 'var(--text-secondary)', marginTop: '2px', fontWeight: '500' }}>
+                            📅 {t.monthFilter}
+                          </div>
+                        )}
+                      </td>
+                      <td><span style={{ fontWeight: '700', fontSize: '0.95rem' }}>{t.count || 1}</span></td>
+                      <td className="text-success font-semibold">+₹{t.amount.toLocaleString('en-IN')}</td>
+                      <td style={{ textAlign: 'right' }}>
+                        <button type="button" onClick={() => handleEdit(t)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-secondary)', marginRight: '16px' }} title="Edit"><Edit2 size={18} /></button>
+                        <button type="button" onClick={() => handleDelete(t.id)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--danger-color)' }} title="Delete"><Trash2 size={18} /></button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+                <tfoot>
+                  <tr>
+                    <td colSpan="2" style={{ textAlign: 'right', fontWeight: '700', padding: '16px' }}>Total:</td>
+                    <td style={{ fontWeight: '800', fontSize: '1.05rem', padding: '16px', color: 'var(--primary-color)' }}>
+                      {totalCount}
+                    </td>
+                    <td className="text-success" style={{ fontWeight: '800', fontSize: '1.1rem', padding: '16px' }}>
+                      +₹{totalIncome.toLocaleString('en-IN')}
+                    </td>
+                    <td></td>
+                  </tr>
+                </tfoot>
+              </table>
+
+              {/* Month-Wise Total Count Breakdown Display */}
+              <div className="recent-income-month-summary">
+                <div className="month-summary-header">
+                  <div className="month-summary-title-wrap">
+                    <h4 className="month-summary-title">
+                      <Calendar size={18} className="text-primary" /> Month-Wise Count Summary
+                    </h4>
+                    <span className="month-summary-subtitle">
+                      Total count and revenue breakdown per month for selected period ({viewMode})
+                    </span>
+                  </div>
+                  <div className="month-summary-total-pills">
+                    <div className="summary-pill total-pill">
+                      <span className="pill-label">Total Count:</span>
+                      <span className="pill-value">{totalCount}</span>
+                    </div>
+                    <div className="summary-pill prereg-pill">
+                      <span className="pill-label">Pre-Reg:</span>
+                      <span className="pill-value">{totalPreRegCount}</span>
+                    </div>
+                    <div className="summary-pill postpay-pill">
+                      <span className="pill-label">Post-Pay:</span>
+                      <span className="pill-value">{totalPostPayCount}</span>
+                    </div>
+                    <div className="summary-pill amount-pill">
+                      <span className="pill-label">Total Income:</span>
+                      <span className="pill-value">+₹{totalIncome.toLocaleString('en-IN')}</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="month-summary-cards-grid">
+                  {monthWiseData.map(m => (
+                    <div key={m.monthKey} className="month-summary-card">
+                      <div className="m-card-top">
+                        <div className="m-card-month-badge">
+                          <span className="m-card-name">{m.monthName}</span>
+                          {m.year && <span className="m-card-year">{m.year}</span>}
+                        </div>
+                        <div className="m-card-count-badge">
+                          <span className="count-label">Count:</span>
+                          <span className="count-val">{m.totalCount}</span>
+                        </div>
+                      </div>
+
+                      <div className="m-card-divider" />
+
+                      <div className="m-card-breakdown">
+                        <div className="m-breakdown-row">
+                          <span className="m-breakdown-cat">
+                            <span className="cat-dot prereg-dot" /> Pre-registration:
+                          </span>
+                          <span className="m-breakdown-val">
+                            <strong>{m.preRegCount}</strong>
+                            {m.preRegAmount > 0 && <span className="m-breakdown-subamt"> (+₹{m.preRegAmount.toLocaleString('en-IN')})</span>}
+                          </span>
+                        </div>
+                        <div className="m-breakdown-row">
+                          <span className="m-breakdown-cat">
+                            <span className="cat-dot postpay-dot" /> Post-payment:
+                          </span>
+                          <span className="m-breakdown-val">
+                            <strong>{m.postPayCount}</strong>
+                            {m.postPayAmount > 0 && <span className="m-breakdown-subamt"> (+₹{m.postPayAmount.toLocaleString('en-IN')})</span>}
+                          </span>
+                        </div>
+                      </div>
+
+                      <div className="m-card-footer">
+                        <span className="m-card-total-label">Month Total:</span>
+                        <span className="m-card-total-amount">+₹{m.totalAmount.toLocaleString('en-IN')}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </>
           )}
         </div>
       </div>
