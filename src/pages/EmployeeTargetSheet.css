@@ -1,1 +1,461 @@
 /* Employee Target Sheet Styles */
+
+/* KPI Summary Cards */
+.target-summary-kpis {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.target-kpi-card {
+  padding: 18px 20px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: var(--card-bg, #ffffff);
+  border: 1.5px solid var(--border-color);
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.target-kpi-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.target-kpi-icon-wrap {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.target-kpi-icon-wrap.pre-icon {
+  background: rgba(99, 102, 241, 0.12);
+  color: var(--primary-color);
+}
+
+.target-kpi-icon-wrap.post-icon {
+  background: rgba(16, 185, 129, 0.12);
+  color: var(--success-color);
+}
+
+.target-kpi-icon-wrap.pending-icon {
+  background: rgba(245, 158, 11, 0.12);
+  color: #d97706;
+}
+
+.target-kpi-icon-wrap.total-icon {
+  background: rgba(139, 92, 246, 0.12);
+  color: #8b5cf6;
+}
+
+.target-kpi-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.target-kpi-label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+.target-kpi-value-row {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.target-kpi-value {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  line-height: 1.2;
+}
+
+.target-kpi-value.pending-val {
+  color: #d97706;
+}
+
+.target-kpi-value.total-val {
+  color: var(--success-color);
+}
+
+.target-kpi-amount-pill {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+}
+
+.target-kpi-sub {
+  font-size: 0.76rem;
+  color: var(--text-secondary);
+  margin-top: 2px;
+}
+
+/* Filter Card */
+.target-filter-card {
+  padding: 16px 20px;
+  border-radius: 16px;
+  border: 1.5px solid var(--border-color);
+  background: var(--card-bg, #ffffff);
+  box-shadow: var(--shadow-sm);
+}
+
+.target-filter-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.target-search-box {
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex: 1;
+  min-width: 220px;
+}
+
+.target-search-box .search-icon {
+  position: absolute;
+  left: 12px;
+  color: var(--text-secondary);
+  pointer-events: none;
+}
+
+.target-search-input-field {
+  width: 100%;
+  padding: 9px 36px 9px 38px;
+  border-radius: 10px;
+  border: 1.5px solid var(--border-color);
+  background: var(--input-bg);
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.target-search-input-field:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.15);
+}
+
+.search-clear-btn {
+  position: absolute;
+  right: 10px;
+  background: rgba(148, 163, 184, 0.2);
+  border: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-secondary);
+  cursor: pointer;
+}
+
+/* Period Pills */
+.period-pills-wrap {
+  display: flex;
+  background: var(--input-bg);
+  padding: 3px;
+  border-radius: 10px;
+  border: 1.5px solid var(--border-color);
+  gap: 2px;
+}
+
+.period-pill {
+  padding: 6px 14px;
+  border-radius: 8px;
+  border: none;
+  background: transparent;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.period-pill:hover {
+  color: var(--text-primary);
+}
+
+.period-pill.active {
+  background: var(--card-bg, #ffffff);
+  color: var(--primary-color);
+  font-weight: 700;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+/* Date Pickers */
+.date-picker-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 12px;
+  background: var(--input-bg);
+  border: 1.5px solid var(--border-color);
+  border-radius: 10px;
+  color: var(--text-secondary);
+}
+
+.date-input-field {
+  border: none;
+  background: transparent;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  outline: none;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.custom-range-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  background: var(--input-bg);
+  border: 1.5px solid var(--border-color);
+  border-radius: 10px;
+}
+
+/* Sort and Filter Dropdowns */
+.sort-dropdown-wrap {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 12px;
+  background: var(--input-bg);
+  border: 1.5px solid var(--border-color);
+  border-radius: 10px;
+  color: var(--text-secondary);
+}
+
+.sort-select-field {
+  border: none;
+  background: transparent;
+  font-size: 0.84rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  outline: none;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+/* Table Styling */
+.target-sheet-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.target-sheet-table thead th {
+  background: rgba(248, 250, 252, 0.9);
+  padding: 14px 16px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-bottom: 2px solid var(--border-color);
+}
+
+.target-sheet-table tbody tr {
+  transition: background 0.15s ease;
+}
+
+.target-sheet-table tbody tr:hover {
+  background: rgba(99, 102, 241, 0.04);
+}
+
+.target-sheet-table tbody td {
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border-color);
+  vertical-align: middle;
+}
+
+/* Employee Name Cell */
+.emp-name-cell {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.emp-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 2px 6px rgba(99, 102, 241, 0.25);
+}
+
+.emp-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.emp-name-text {
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--text-primary);
+}
+
+.emp-role-text {
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+/* Count and Amount Cells */
+.count-amount-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+}
+
+.count-badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-weight: 800;
+  font-size: 0.92rem;
+  min-width: 32px;
+  text-align: center;
+}
+
+.count-badge.pre-badge {
+  background: rgba(99, 102, 241, 0.12);
+  color: var(--primary-color);
+  border: 1px solid rgba(99, 102, 241, 0.2);
+}
+
+.count-badge.post-badge {
+  background: rgba(16, 185, 129, 0.12);
+  color: var(--success-color);
+  border: 1px solid rgba(16, 185, 129, 0.2);
+}
+
+.amount-subtext {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+/* Pending Pill */
+.pending-cell-wrap {
+  display: flex;
+  justify-content: center;
+}
+
+.pending-pill {
+  display: inline-block;
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.pending-pill.warning {
+  background: rgba(245, 158, 11, 0.12);
+  color: #b45309;
+  border: 1.5px solid rgba(245, 158, 11, 0.3);
+}
+
+.pending-pill.success {
+  background: rgba(16, 185, 129, 0.1);
+  color: #059669;
+  border: 1.5px solid rgba(16, 185, 129, 0.25);
+}
+
+.pending-pill.neutral {
+  background: rgba(148, 163, 184, 0.12);
+  color: #64748b;
+  border: 1px solid rgba(148, 163, 184, 0.25);
+}
+
+/* Total Amount Cell */
+.total-amount-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+}
+
+.total-amount-text {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: var(--text-primary);
+}
+
+.conversion-text {
+  font-size: 0.74rem;
+  font-weight: 700;
+  color: var(--success-color);
+}
+
+/* Grand Total Footer Row */
+.target-total-footer-row td {
+  background: rgba(248, 250, 252, 0.95);
+  border-top: 2px solid var(--border-color);
+  border-bottom: none;
+  padding: 16px;
+}
+
+.count-badge.footer-badge {
+  font-size: 1rem;
+  padding: 4px 12px;
+}
+
+.amount-subtext.footer-subtext {
+  font-weight: 700;
+  font-size: 0.82rem;
+  color: var(--text-primary);
+}
+
+.footer-grand-total {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--success-color);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .target-filter-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .target-search-box, .period-pills-wrap, .date-picker-wrap, .sort-dropdown-wrap {
+    width: 100%;
+  }
+
+  .period-pills-wrap {
+    overflow-x: auto;
+  }
+}
