@@ -915,11 +915,6 @@ const IncomeForm = () => {
                       <td>{new Date(t.date).toLocaleDateString()}</td>
                       <td>
                         <strong>{t.category}</strong>
-                        {t.monthFilter && (
-                          <div style={{ fontSize: '0.76rem', color: 'var(--text-secondary)', marginTop: '2px', fontWeight: '500' }}>
-                            📅 {t.monthFilter}
-                          </div>
-                        )}
                       </td>
                       <td><span style={{ fontWeight: '700', fontSize: '0.95rem' }}>{t.count || 1}</span></td>
                       <td className="text-success font-semibold">+₹{t.amount.toLocaleString('en-IN')}</td>
