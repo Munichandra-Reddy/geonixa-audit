@@ -1,23 +1,24 @@
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap');
 
 :root {
-  /* Vibrant AI Core Palette */
-  --primary-color: #4F46E5;
-  --primary-hover: #4338CA;
-  --primary-gradient: linear-gradient(135deg, #4F46E5 0%, #7C3AED 50%, #06B6D4 100%);
-  --primary-glow: rgba(79, 70, 229, 0.35);
+  /* Modern Emerald & Teal Palette */
+  --primary-color: #0D9488;
+  --primary-hover: #0F766E;
+  --primary-gradient: linear-gradient(135deg, #059669 0%, #0D9488 50%, #06B6D4 100%);
+  --primary-glow: rgba(13, 148, 136, 0.35);
   
   --accent-cyan: #06B6D4;
-  --accent-violet: #7C3AED;
-  --accent-fuchsia: #D946EF;
+  --accent-teal: #14B8A6;
+  --accent-emerald: #10B981;
+  --accent-mint: #34D399;
   --accent-amber: #F59E0B;
   
-  /* Rich AI Royal Indigo-Violet-Cyan Aurora Canvas (Vibrant, Non-Black) */
-  --bg-color: #3730A3;
-  --bg-gradient: linear-gradient(135deg, #312E81 0%, #4338CA 30%, #6366F1 65%, #0284C7 100%);
+  /* Rich Deep Forest & Slate Teal Canvas (Vibrant, Non-Black) */
+  --bg-color: #064E3B;
+  --bg-gradient: linear-gradient(135deg, #062C27 0%, #064E3B 35%, #0D5C52 65%, #0E7490 100%);
   
   /* Luminous White Glassmorphic Panels */
-  --card-bg: rgba(255, 255, 255, 0.94);
+  --card-bg: rgba(255, 255, 255, 0.95);
   --card-bg-hover: #FFFFFF;
   
   /* Crisp High-Contrast Typography */
@@ -26,13 +27,13 @@
   --text-muted: #94A3B8;
   
   /* Refined Glass Borders */
-  --border-color: rgba(99, 102, 241, 0.22);
-  --border-focus: #4F46E5;
+  --border-color: rgba(13, 148, 136, 0.22);
+  --border-focus: #0D9488;
   
   /* Vibrant Status Colors */
   --success-color: #059669;
-  --success-bg: rgba(16, 185, 129, 0.1);
-  --success-border: rgba(16, 185, 129, 0.25);
+  --success-bg: rgba(16, 185, 129, 0.12);
+  --success-border: rgba(16, 185, 129, 0.28);
   
   --danger-color: #E11D48;
   --danger-bg: rgba(244, 63, 94, 0.1);
@@ -41,10 +42,10 @@
   /* Clean White Inputs */
   --input-bg: #FFFFFF;
   
-  --shadow-sm: 0 2px 4px 0 rgba(30, 27, 75, 0.08);
-  --shadow-md: 0 6px 12px -1px rgba(30, 27, 75, 0.14);
-  --shadow-lg: 0 16px 36px -4px rgba(30, 27, 75, 0.24);
-  --shadow-glow: 0 0 24px -2px rgba(99, 102, 241, 0.35);
+  --shadow-sm: 0 2px 4px 0 rgba(6, 44, 39, 0.08);
+  --shadow-md: 0 6px 12px -1px rgba(6, 44, 39, 0.14);
+  --shadow-lg: 0 16px 36px -4px rgba(6, 44, 39, 0.24);
+  --shadow-glow: 0 0 24px -2px rgba(13, 148, 136, 0.35);
 }
 
 * {
@@ -83,8 +84,8 @@ body {
 }
 
 .glass-panel:hover {
-  border-color: rgba(99, 102, 241, 0.4);
-  box-shadow: 0 20px 40px -4px rgba(30, 27, 75, 0.28);
+  border-color: rgba(13, 148, 136, 0.4);
+  box-shadow: 0 20px 40px -4px rgba(6, 44, 39, 0.28);
 }
 
 .input-field {
@@ -103,7 +104,7 @@ body {
 
 .input-field:focus {
   border-color: var(--primary-color);
-  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.18);
+  box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.18);
   background-color: #FFFFFF;
 }
 
@@ -118,7 +119,7 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-  background: rgba(49, 46, 129, 0.3);
+  background: rgba(6, 44, 39, 0.3);
 }
 
 ::-webkit-scrollbar-thumb {
@@ -144,12 +145,12 @@ body {
   align-items: center;
   justify-content: center;
   gap: 8px;
-  box-shadow: 0 4px 14px 0 rgba(79, 70, 229, 0.35);
+  box-shadow: 0 4px 14px 0 rgba(13, 148, 136, 0.35);
 }
 
 .btn-primary:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px 0 rgba(79, 70, 229, 0.45);
+  box-shadow: 0 6px 20px 0 rgba(13, 148, 136, 0.45);
   filter: brightness(1.06);
 }
 

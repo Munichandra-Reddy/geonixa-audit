@@ -71,15 +71,15 @@
 
 .nav-item:hover {
   color: var(--primary-color);
-  background: rgba(99, 102, 241, 0.08);
+  background: rgba(13, 148, 136, 0.08);
   transform: translateX(3px);
 }
 
 .nav-item.active {
-  background: linear-gradient(135deg, rgba(99, 102, 241, 0.12), rgba(139, 92, 246, 0.08));
+  background: linear-gradient(135deg, rgba(13, 148, 136, 0.14), rgba(16, 185, 129, 0.08));
   color: var(--primary-color);
   border-left: 3px solid var(--primary-color);
-  box-shadow: 0 2px 10px rgba(99, 102, 241, 0.12);
+  box-shadow: 0 2px 10px rgba(13, 148, 136, 0.12);
 }
 
 .sidebar-footer {

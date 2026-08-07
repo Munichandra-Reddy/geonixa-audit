@@ -34,7 +34,7 @@
 }
 
 .icon-btn:hover {
-  background: rgba(99, 102, 241, 0.1);
+  background: rgba(13, 148, 136, 0.1);
   border-color: var(--primary-color);
   color: var(--primary-color);
   transform: scale(1.05);
@@ -77,8 +77,8 @@
 
 .calendar-day:not(.empty):hover {
   transform: translateY(-3px);
-  box-shadow: 0 8px 24px rgba(99, 102, 241, 0.12);
-  border-color: rgba(99, 102, 241, 0.35);
+  box-shadow: 0 8px 24px rgba(13, 148, 136, 0.12);
+  border-color: rgba(13, 148, 136, 0.35);
 }
 
 .calendar-day.empty {
@@ -103,7 +103,7 @@
 .text-xs {
   font-size: 0.8rem;
   font-weight: 700;
-  background: rgba(99, 102, 241, 0.08);
+  background: rgba(13, 148, 136, 0.08);
   padding: 4px 8px;
   border-radius: 6px;
 }

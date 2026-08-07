@@ -50,7 +50,7 @@
 .data-table th {
   font-weight: 700;
   color: var(--text-secondary);
-  background: rgba(99, 102, 241, 0.04);
+  background: rgba(13, 148, 136, 0.05);
   text-transform: uppercase;
   font-size: 0.75rem;
   letter-spacing: 0.5px;
@@ -67,7 +67,7 @@
 }
 
 .data-table tr:hover td {
-  background: rgba(99, 102, 241, 0.025);
+  background: rgba(13, 148, 136, 0.025);
 }
 
 .form-card, .list-card {
@@ -129,7 +129,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 12px 16px;
-  background: rgba(99, 102, 241, 0.04);
+  background: rgba(13, 148, 136, 0.04);
   border-radius: 10px;
   border: 1px solid var(--border-color);
 }
@@ -215,7 +215,7 @@
 }
 
 .month-scroll-btn:hover:not(:disabled) {
-  background: rgba(99, 102, 241, 0.1);
+  background: rgba(13, 148, 136, 0.1);
   border-color: var(--primary-color);
   color: var(--primary-color);
   transform: scale(1.05);
@@ -272,15 +272,15 @@
 }
 
 .month-card:hover {
-  border-color: rgba(99, 102, 241, 0.4);
+  border-color: rgba(13, 148, 136, 0.4);
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.1);
+  box-shadow: 0 4px 12px rgba(13, 148, 136, 0.1);
 }
 
 .month-card.has-count {
   border-color: var(--primary-color);
-  background: linear-gradient(135deg, rgba(99, 102, 241, 0.06), rgba(139, 92, 246, 0.03));
-  box-shadow: 0 4px 14px rgba(99, 102, 241, 0.12);
+  background: linear-gradient(135deg, rgba(13, 148, 136, 0.08), rgba(16, 185, 129, 0.04));
+  box-shadow: 0 4px 14px rgba(13, 148, 136, 0.12);
 }
 
 .month-card.is-current {
@@ -325,7 +325,7 @@
 
 .month-count-input:focus {
   border-color: var(--primary-color);
-  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+  box-shadow: 0 0 0 2px rgba(13, 148, 136, 0.2);
 }
 
 /* Post-Payment Dynamic Price Pop-Out Boxes */
@@ -390,7 +390,7 @@
 
 .post-price-item:focus-within {
   border-color: var(--primary-color);
-  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.18);
+  box-shadow: 0 0 0 2px rgba(13, 148, 136, 0.18);
 }
 
 .post-price-label {
@@ -429,7 +429,7 @@
 
 .post-price-input:focus {
   border-color: var(--primary-color);
-  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.15);
+  box-shadow: 0 0 0 2px rgba(13, 148, 136, 0.15);
 }
 
 /* Dynamic Entry Cards (Price, Employee Name, Student Name) */
@@ -456,7 +456,7 @@
 
 .post-entry-card:focus-within {
   border-color: var(--primary-color);
-  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.15);
+  box-shadow: 0 0 0 2px rgba(13, 148, 136, 0.15);
 }
 
 .post-entry-card-header {
@@ -471,7 +471,7 @@
   color: var(--primary-color);
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  background: rgba(99, 102, 241, 0.08);
+  background: rgba(13, 148, 136, 0.08);
   padding: 2px 8px;
   border-radius: 6px;
 }
@@ -520,13 +520,13 @@
 
 .post-text-input:focus {
   border-color: var(--primary-color);
-  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.15);
+  box-shadow: 0 0 0 2px rgba(13, 148, 136, 0.15);
 }
 
 .month-card.is-active-post-month {
   border-color: var(--primary-color) !important;
-  box-shadow: 0 0 0 2.5px rgba(99, 102, 241, 0.25) !important;
-  background: rgba(238, 242, 255, 0.95) !important;
+  box-shadow: 0 0 0 2.5px rgba(13, 148, 136, 0.25) !important;
+  background: rgba(240, 253, 250, 0.95) !important;
 }
 
 .post-month-tabs {
@@ -559,7 +559,7 @@
 
 .post-month-tab.active {
   border-color: var(--primary-color);
-  background: rgba(99, 102, 241, 0.12);
+  background: rgba(13, 148, 136, 0.12);
   color: var(--primary-color);
   font-weight: 700;
 }
@@ -575,8 +575,8 @@
   font-size: 0.78rem;
   font-weight: 700;
   color: var(--primary-color);
-  background: rgba(99, 102, 241, 0.08);
-  border: 1px solid rgba(99, 102, 241, 0.2);
+  background: rgba(13, 148, 136, 0.08);
+  border: 1px solid rgba(13, 148, 136, 0.2);
   padding: 4px 10px;
   border-radius: 16px;
 }
@@ -648,21 +648,21 @@
 }
 
 .summary-pill.total-pill {
-  background: linear-gradient(135deg, rgba(99, 102, 241, 0.15), rgba(139, 92, 246, 0.15));
-  border-color: rgba(99, 102, 241, 0.3);
+  background: linear-gradient(135deg, rgba(13, 148, 136, 0.15), rgba(16, 185, 129, 0.15));
+  border-color: rgba(13, 148, 136, 0.3);
   color: var(--primary-color);
 }
 
 .summary-pill.prereg-pill {
-  background: rgba(99, 102, 241, 0.08);
-  border-color: rgba(99, 102, 241, 0.2);
+  background: rgba(13, 148, 136, 0.08);
+  border-color: rgba(13, 148, 136, 0.2);
   color: var(--primary-color);
 }
 
 .summary-pill.postpay-pill {
-  background: rgba(139, 92, 246, 0.08);
-  border-color: rgba(139, 92, 246, 0.2);
-  color: var(--accent-violet, #8b5cf6);
+  background: rgba(16, 185, 129, 0.08);
+  border-color: rgba(16, 185, 129, 0.2);
+  color: #059669;
 }
 
 .summary-pill.amount-pill {
@@ -692,7 +692,7 @@
 .month-summary-card:hover {
   border-color: var(--primary-color);
   transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(99, 102, 241, 0.1);
+  box-shadow: 0 6px 16px rgba(13, 148, 136, 0.1);
 }
 
 .m-card-top {
@@ -720,8 +720,8 @@
 }
 
 .m-card-count-badge {
-  background: linear-gradient(135deg, rgba(99, 102, 241, 0.12), rgba(139, 92, 246, 0.12));
-  border: 1px solid rgba(99, 102, 241, 0.25);
+  background: linear-gradient(135deg, rgba(13, 148, 136, 0.12), rgba(16, 185, 129, 0.12));
+  border: 1px solid rgba(13, 148, 136, 0.25);
   padding: 3px 10px;
   border-radius: 14px;
   display: flex;
@@ -781,7 +781,7 @@
 }
 
 .cat-dot.postpay-dot {
-  background: var(--accent-violet, #8b5cf6);
+  background: #10B981;
 }
 
 .m-breakdown-val {

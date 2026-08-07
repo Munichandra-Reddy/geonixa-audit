@@ -107,25 +107,25 @@ const Notifications = () => {
 
           <div style={{ display: 'flex', gap: '6px' }}>
             <button 
-              style={{ padding: '6px 14px', borderRadius: '8px', border: '1px solid var(--border-color)', background: filter === 'all' ? 'rgba(99, 102, 241, 0.12)' : 'transparent', color: filter === 'all' ? 'var(--primary-color)' : 'var(--text-secondary)', fontWeight: filter === 'all' ? '700' : '500', cursor: 'pointer' }}
+              style={{ padding: '6px 14px', borderRadius: '8px', border: '1px solid var(--border-color)', background: filter === 'all' ? 'rgba(13, 148, 136, 0.12)' : 'transparent', color: filter === 'all' ? 'var(--primary-color)' : 'var(--text-secondary)', fontWeight: filter === 'all' ? '700' : '500', cursor: 'pointer' }}
               onClick={() => setFilter('all')}
             >
               All
             </button>
             <button 
-              style={{ padding: '6px 14px', borderRadius: '8px', border: '1px solid var(--border-color)', background: filter === 'income' ? 'rgba(99, 102, 241, 0.12)' : 'transparent', color: filter === 'income' ? 'var(--primary-color)' : 'var(--text-secondary)', fontWeight: filter === 'income' ? '700' : '500', cursor: 'pointer' }}
+              style={{ padding: '6px 14px', borderRadius: '8px', border: '1px solid var(--border-color)', background: filter === 'income' ? 'rgba(13, 148, 136, 0.12)' : 'transparent', color: filter === 'income' ? 'var(--primary-color)' : 'var(--text-secondary)', fontWeight: filter === 'income' ? '700' : '500', cursor: 'pointer' }}
               onClick={() => setFilter('income')}
             >
               Income
             </button>
             <button 
-              style={{ padding: '6px 14px', borderRadius: '8px', border: '1px solid var(--border-color)', background: filter === 'expense' ? 'rgba(99, 102, 241, 0.12)' : 'transparent', color: filter === 'expense' ? 'var(--primary-color)' : 'var(--text-secondary)', fontWeight: filter === 'expense' ? '700' : '500', cursor: 'pointer' }}
+              style={{ padding: '6px 14px', borderRadius: '8px', border: '1px solid var(--border-color)', background: filter === 'expense' ? 'rgba(13, 148, 136, 0.12)' : 'transparent', color: filter === 'expense' ? 'var(--primary-color)' : 'var(--text-secondary)', fontWeight: filter === 'expense' ? '700' : '500', cursor: 'pointer' }}
               onClick={() => setFilter('expense')}
             >
               Expenses
             </button>
             <button 
-              style={{ padding: '6px 14px', borderRadius: '8px', border: '1px solid var(--border-color)', background: filter === 'alert' ? 'rgba(99, 102, 241, 0.12)' : 'transparent', color: filter === 'alert' ? 'var(--primary-color)' : 'var(--text-secondary)', fontWeight: filter === 'alert' ? '700' : '500', cursor: 'pointer' }}
+              style={{ padding: '6px 14px', borderRadius: '8px', border: '1px solid var(--border-color)', background: filter === 'alert' ? 'rgba(13, 148, 136, 0.12)' : 'transparent', color: filter === 'alert' ? 'var(--primary-color)' : 'var(--text-secondary)', fontWeight: filter === 'alert' ? '700' : '500', cursor: 'pointer' }}
               onClick={() => setFilter('alert')}
             >
               Alerts

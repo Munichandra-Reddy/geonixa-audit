@@ -3,7 +3,7 @@ import { AppProvider } from '../context/AppContext';
 import AuthGuard from '../components/AuthGuard';
 
 export const viewport = {
-  themeColor: '#5b1422',
+  themeColor: '#064E3B',
 };
 
 export const metadata = {
